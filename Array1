@@ -40,3 +40,34 @@ public class Solution
     }
 }
 
+2) \\ Removing minimum and maximum from Array.
+Return the minimum number of deletions it would take to remove both the minimum and maximum element from the array.
+
+class Solution {
+    public int minimumDeletions(int[] nums) {
+        int smallVal=Integer.MAX_VALUE;
+        int largeVal=Integer.MIN_VALUE;
+        int sm_ind=0;
+        int lg_ind=0;
+        for(int i=0;i<nums.length;i++){   // finding the index of min and max element.
+            if(nums[i]<smallVal){
+                smallVal=nums[i];
+                sm_ind=i;
+            }
+            if(nums[i]>largeVal){
+                largeVal=nums[i];
+                lg_ind=i;
+            }
+        }
+        int l=Math.min(sm_ind,lg_ind);   // assigning the min and max index to separate variables. (leftmost is smaller)
+        int r=Math.max(sm_ind,lg_ind);
+        int cs1=r+1;                    // removing both from left. 
+        int cs2=nums.length-l;          // removing both from right.  
+        int cs3=(l+1)+(nums.length-r);  // removing one from left and one from right.
+        return Math.min(cs1,Math.min(cs2,cs3));
+    }
+}
+
+
+
+
