@@ -1,1 +1,42 @@
+1) // Reverse The Array
+Given an array/list 'ARR' of integers and a position ‘M’. You have to reverse the array after that position.
+
+import java.util.* ;
+import java.io.*; 
+import java.util.ArrayList;
+
+public class Solution 
+{
+    public static void reverseArray(ArrayList<Integer> arr, int m)
+    {    
+        int n=arr.size();
+        int l=m+1;
+        int r=n-1;
+        while(l<r){      //swapping the arraylist using 2 pointers left and right for reversing.
+            int tmp=arr.get(l);    
+            arr.set(l,arr.get(r));
+            arr.set(r,tmp);
+            l++;
+            r--;
+        }
+    }
+    public static void main(String[] args){
+        Scanner sc=new Scanner(System.in);
+        int T=sc.nextInt();
+        while(T-->0){
+            int n=sc.nextInt();
+            int m=sc.nextInt();
+            ArrayList<Integer> arr=new ArrayList<>();
+            for(int i=0;i<n;i++){
+                arr.add(sc.nextInt());
+            }
+            reverseArray(arr,m);
+            for(int num:arr){
+             System.out.println(num+" ");
+            }
+            System.out.println();
+        }
+        sc.close();
+    }
+}
 
