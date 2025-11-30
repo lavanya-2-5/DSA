@@ -117,8 +117,8 @@ class Solution {
 
 public class Solution{
     public static void rotate(int[] nums,int k){
-      int n=nums.length;       //If k is larger than the array length n, rotating extra times does nothing new.
-      k=k%n;                   //If k = 7 and size of array is 7: Rotating 7 times is the same as rotating 7 % 7 = 0 times.
+      int n=nums.length;                    //If k is larger than the array length n, rotating extra times does nothing new.
+      k=k%n;                                  //If k = 7 and size of array is 7: Rotating 7 times is the same as rotating 7 % 7 = 0 times.
       reverse(nums,0,n-1);
       reverse(nums,0,k-1);
       reverse(nums,k,n-1);
@@ -126,7 +126,7 @@ public class Solution{
     public static void reverse(int[] nums, int start, int end){
       while(start<end){
         int tmp=nums[start];
-        nums[start]=nums[end];
+        nums[start]=nums[end];                    // reversing by swapping start and end elements .
         nums[end]=tmp;
         start++;
         end--;   
@@ -152,5 +152,63 @@ public class Solution{
     }
    } 
 
-6) 
+6) //REMOVE DUPLICATES FROM SORTED ARRAY.
+ 
+class Solution {
+    public int removeDuplicates(int[] nums) {          //updating the value of i only when the nums[j] != nums[i] and then overwriting at ith index.
+        if (nums.length == 0) return 0;
+
+        int i = 0; // pointer for the position of unique elements
+
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[j] != nums[i]) { 
+                i++;                                 // move to next position for new unique element
+                nums[i] = nums[j];                    // update with the new unique value
+            }
+        }
+
+        return i + 1;                                  // length of array with unique elements
+    }
+}
+
+7) //FINDING ALL THE REPEATED ELEMENTS IN THE ARRAY.
+
+public class Solution{
+  public static int[] rep(int[] nums){
+    HashMap<Integer,Integer> map=new HashMap<>();  //creating hashmap to store elements and their freq.
+    for(int num:nums){
+     map.put(num,map.getOrDefault(num,0)+1);       //storing key-value.
+    } 
+    int m=Integer.MIN_VALUE;
+    for(int f:map.values()){                        //finding the max. freq.   
+      m=Math.max(m,f);
+    }
+    int c=0;
+    for(int f:map.values()){                       //finding the total no. of elements with max. freq.
+      if(f==m) c++;
+    }
+    int[] arr=new int[c];                          //creating new array of that size.
+    int i=0;
+    for(Map.Entry<Integer,Integer> entry:map.entrySet()){     //using entrySet() to access both key and value. then storing in array.
+       if(entry.getValue()==m){
+        arr[i]=entry.getKey();
+        i++;
+       }
+    }
+    return arr;
+   }
+  public static void main(String[] args){
+    Scanner sc=new Scanner(System.in);
+     System.out.println("Enter the size of the array:");
+     int n=sc.nextInt();
+     System.out.println("Enter the elements:");
+     int[] nums=new int[n];
+     for(int i=0;i<n;i++){
+      nums[i]=sc.nextInt();
+     }
+     System.out.println("repeated elements are:"+ Arrays.toString(rep(nums)));
+  }
+}
+
+8) 
 
