@@ -113,6 +113,44 @@ class Solution {
     }
 }
 
-5) 
+5)//Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
 
+public class Solution{
+    public static void rotate(int[] nums,int k){
+      int n=nums.length;       //If k is larger than the array length n, rotating extra times does nothing new.
+      k=k%n;                   //If k = 7 and size of array is 7: Rotating 7 times is the same as rotating 7 % 7 = 0 times.
+      reverse(nums,0,n-1);
+      reverse(nums,0,k-1);
+      reverse(nums,k,n-1);
+    }
+    public static void reverse(int[] nums, int start, int end){
+      while(start<end){
+        int tmp=nums[start];
+        nums[start]=nums[end];
+        nums[end]=tmp;
+        start++;
+        end--;   
+      }
+    }
+    public static void main(String[] args){
+      Scanner sc=new Scanner(System.in);
+      System.out.println("Enter the size of the array:");
+      int n=sc.nextInt();
+      System.out.println("Enter the value of k:");
+      int k=sc.nextInt();
+      System.out.println("Enter the elements:");
+      int[] nums=new int[n];
+      for(int i=0;i<n;i++){
+      nums[i]=sc.nextInt();
+      }
+      rotate(nums,k);
+      System.out.println("Rotated array:");
+      for(int num:nums){
+      System.out.print(num+" ");
+      }
+      sc.close();
+    }
+   } 
+
+6) 
 
