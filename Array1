@@ -94,6 +94,25 @@ public class Solution{
   }
 }  
 
-4) 
+4) // Return the total frequencies of elements in nums such that those elements all have the maximum frequency.
+
+class Solution {
+    public int maxFrequencyElements(int[] nums) {
+        HashMap<Integer,Integer> mp=new HashMap<>();    //using a hashmap to store frequencies.
+        for(int num:nums){
+            mp.put(num,mp.getOrDefault(num,0)+1);
+        }
+        int maxf=Collections.max(mp.values());         //finding max freq.
+        int c=0;
+        for(int fq:mp.values()){                       //counting the same max freq. and doing sum.
+           if(fq==maxf){
+            c=c+fq;
+           }
+        }
+        return c;
+    }
+}
+
+5) 
 
 
