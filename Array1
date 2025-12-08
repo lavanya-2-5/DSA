@@ -236,4 +236,87 @@ public class Solution{
   }
 }
 
-9) //
+9) //Given two integer arrays nums1 and nums2, return an array of their intersection.
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        HashSet<Integer> set1=new HashSet<>();             //creating a hashset to store nums1 elements.
+        for(int num:nums1){
+            set1.add(num);
+        }
+        HashSet<Integer> resultset=new HashSet<>();          //creating another set to store result elements.
+         for(int num:nums2){
+            if(set1.contains(num)){                         //finding the common elements.
+                resultset.add(num);
+            }
+        }
+        int[] arr=new int[resultset.size()];                //converting set to array.
+        int i=0;
+        for(int num:resultset){
+            arr[i++]=num;
+        }
+        return arr;
+    }
+}
+
+10) // find the subarray with the largest sum.
+
+class Solution {
+    public int maxSubArray(int[] nums) {         // Using Kadane's Algorithm.
+        int currentMax=nums[0];
+        int latestMax=nums[0];
+        for(int i=1;i<nums.length;i++){
+            currentMax=Math.max(nums[i],currentMax+nums[i]);
+            latestMax=Math.max(currentMax,latestMax);
+        }
+        return latestMax;
+    }
+}
+
+11) // find a subarray that has the largest product, and return the product.    (Kadanes algo.)
+
+class Solution {
+    public int maxProduct(int[] nums) {
+        int maximum=Integer.MIN_VALUE;     //It keeps two running products:
+          int prefix=1;                             //prefix → multiplying from the start
+            int suffix=1;                      // suffix → multiplying from the end
+           int n=nums.length;
+        for(int i=0;i<n;i++){                  //If either product becomes 0, it resets to 1
+            if(prefix==0){
+                prefix=1;
+            }
+            if(suffix==0){
+                suffix=1;
+            }
+            prefix=prefix*nums[i];
+            suffix=suffix*nums[n-i-1];
+             maximum=Math.max(maximum,Math.max(prefix,suffix));  //At every step, it takes the maximum value seen between the current prefix, suffix, and previous maximum.
+        }
+        return maximum;
+    }
+}
+
+12) // Given an array nums of size n, return the majority element.
+
+class Solution {                                        //Moores Voting Algorithm.
+    public int majorityElement(int[] nums) {
+        int candidate=0;
+        int points=0;
+        for(int i=0;i<nums.length;i++){
+            if(points==0){
+                candidate=nums[i];
+            }
+            if(candidate==nums[i]){
+                points++;
+            }
+            else{
+                points--;
+            }
+        }
+        return candidate;
+    }
+}
+                                                       
+
+
+
