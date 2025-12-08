@@ -1,1 +1,178 @@
+1) // VALID PALINDROME
+
+class Solution {
+    public boolean isPalindrome(String s) {
+        int left=0;
+        int right=s.length()-1;
+        while(left<right){
+            char l=s.charAt(left);
+            char r=s.charAt(right);
+            if(!Character.isLetterOrDigit(l)){
+                left++;
+            }
+            else if(!Character.isLetterOrDigit(r)){
+                right--;
+            }
+            else if(Character.toLowerCase(l)!=Character.toLowerCase(r)){
+                return false;
+            }
+            else{
+                left++;
+                right--;
+            }
+        }
+        return true;
+    }
+} 
+
+2) // Given a string, write a program to count the number of vowels, consonants, and spaces in that string.
+
+import java.util.Scanner;
+public class CountCharacters {
+    public static void countDetails(String text) {
+        text = text.toLowerCase();                     //converting to lowercase.
+        int vowels = 0, consonants = 0, spaces = 0;
+        for (char ch : text.toCharArray()) {       
+            if (ch >= 'a' && ch <= 'z') {                   //checking for alphabet.
+                if ("aeiou".indexOf(ch) != -1) {            //checking for vowel.
+                    vowels++;                            
+                } else {                                      //if not a vowel but an alphabet then it is a consonant.
+                    consonants++;
+                }
+            } else if (ch == ' ') {
+                spaces++;
+            }
+        }
+        System.out.println("Vowels: " + vowels);
+        System.out.println("Consonants: " + consonants);
+        System.out.println("Spaces: " + spaces);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a string: ");
+        String input = sc.nextLine();
+        countDetails(input);
+        sc.close();
+    }
+}
+
+3) // Write a program to remove all characters from a string except alphabets in a given string.
+
+import java.util.Scanner;
+public class FilterAlphabets {
+    public static String keepOnlyLetters(String text) {   // Method to keep only alphabetic characters
+        StringBuilder res = new StringBuilder();
+        for (char ch : text.toCharArray()) {
+            if (Character.isLetter(ch)) {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a string: ");
+        String input = sc.nextLine();
+        String cleanedString = keepOnlyLetters(input);
+        System.out.println("String after removing non-alphabet characters: " + cleanedString);
+        sc.close();
+    }
+}
+
+4) // Given a string, calculate the frequency of characters in a string.
+
+public class Main {
+public static void printFrequency(String str) {
+    int[] freq = new int[26];                                // Array to store frequency of a-z                                            
+    for (int i = 0; i < str.length(); i++) {                   // Count frequency of each character
+      freq[str.charAt(i) - 'a']++;
+    }
+    for (int i = 0; i < 26; i++) {                                // Print characters with non-zero frequency
+      if (freq[i] != 0) {
+        System.out.print((char)(i + 'a') + "" + freq[i] + " ");
+      }
+    }
+  }
+  public static void main(String[] args) {
+    String str = "takeuforward";
+    printFrequency(str);
+  }
+}
+
+5) // Given a string, return the character that occurs the maximum number of times in the string. 
+      If the maximum occurrence of two or more characters is the same, return any one of them.
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+public class MaxOccurringCharacterUsingMap {
+    public static char getMaxCharacter(String str) {
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+        for (char ch : str.toCharArray()) {                            // Count frequency of each character
+            frequencyMap.put(ch, frequencyMap.getOrDefault(ch, 0) + 1);
+        }
+        char maxChar = '\0';                                        // Find the character with maximum frequency
+        int maxCount = -1;
+        for (Map.Entry<Character, Integer> entry : frequencyMap.entrySet()) {    //using entrySet().
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                maxChar = entry.getKey();
+            }
+        }
+        return maxChar;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a string: ");
+        String input = sc.nextLine();
+        char result = getMaxCharacter(input);
+        System.out.println("Character with maximum occurrences: " + result);
+        sc.close();
+    }
+}
+
+6) // Remove duplicates from a string.
+
+public class RemoveDuplicates {
+    public static String removeDuplicateChars(String input) {
+        int[] freq = new int[256];                                // Frequency array of size 256 for extended ASCII characters.
+        StringBuilder result = new StringBuilder();             // StringBuilder to build result without duplicates.
+        for (char ch : input.toCharArray()) {
+            if (freq[ch] == 0) {                          // First time occurrence
+                result.append(ch);
+                freq[ch]++;                                  // Mark as visited
+            }
+        }
+        return result.toString();
+    }
+    public static void main(String[] args) {
+        String str = "banana";
+        System.out.println("Original: " + str);
+        System.out.println("After removing duplicates: " + removeDuplicateChars(str));
+    }
+}
+
+7) // Write a program to count the number of words in a given string.
+
+import java.util.*;
+class Solution {
+    public int countWords(String s) {                // Method to count number of words in string.
+        int spaces = 0;                                // Count spaces in the string
+        for (char c : s.toCharArray()) {
+            if (c == ' ') {
+                spaces++;
+            }
+        }
+        return spaces + 1;                       // Number of words = spaces + 1
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        String s = "Hello this is test";                // Input string
+        Solution obj = new Solution();                  // Create object of Solution
+        System.out.println(obj.countWords(s));        // Call function and print result
+    }
+}
+
+
 
