@@ -1,1 +1,147 @@
+1)  //FIND FACTORIAL.
 
+class Main {
+    public static int factorial(int n){
+        if(n==0 || n==1) return 1;           //base case
+        return n*factorial(n-1);
+    }
+    public static void main(String[] args) {
+       int ans=factorial(6);
+       System.out.println(ans);
+    }
+}
+Time complexity=O(N)
+Space complexity=O(N)
+Hnece iterative way is better as it uses space for each recursive call.
+
+
+2)  // Given a number n, find the value of n raised to the POWER of its own reverse.
+
+class Main {
+    public static int power(int n){
+       int original=n;
+       int reversed=reverse(n,0);
+       int res=(int)Math.pow(original,reversed);
+       return res;
+    }
+    public static int reverse(int n,int rev){
+        if(n==0) return rev;                     //base case
+        return reverse(n/10,rev*10+n%10);        //Makes d recursive calls (where d = number of digits).
+    }
+    public static void main(String[] args) {
+       int ans=power(2);
+       System.out.println(ans);
+    }
+}
+
+
+3)  // Given an positive integer n, print numbers from 1 to n without using loops.
+
+class Solution {
+    static void printTillN(int N) {
+        if(N==0) return;                   //base case
+        
+        printTillN(N-1);                   //call recursion for n-1.
+        System.out.print(N+" ");           //first print 1 when n=0 becomes true.
+    }
+}
+
+
+4)  // Given a positive integer n, count the number of digits in n that divide n evenly (i.e., without leaving a remainder).
+
+class Solution {
+    static int evenlyDivides(int n) {
+       return help(n,n);
+    }
+    static int help(int n,int original){
+        if(n==0) return 0;                    //base case.
+        
+        int dg=n%10;
+        int count=0;
+        if(dg!=0 && original%dg==0){
+            count=1;
+        }
+        return count+help(n/10,original);
+    }
+} 
+
+
+5)  // You are given an integer array arr[]. The task is to find the sum of it.
+
+class Solution {
+    int arraySum(int arr[]) {
+        int n=arr.length;
+        return help(arr,n-1);
+    }
+    int help(int[] arr,int n){ 
+        if(n<0) return 0;                     //base case.(when the value becomes -1, return back the value 0.)
+        return arr[n]+help(arr,n-1);
+    }
+}
+
+
+6)  // calculate the pivot index of this array.
+
+class Solution {
+    public int pivotIndex(int[] nums) {
+        int ts=0;
+        for(int num:nums){                              //calculate totalsum separately.
+            ts=ts+num;
+        }
+        return help(nums,0,0,ts);                     //passing parameters as index,leftsum that will change.
+    }
+    public int help(int[] nums,int i,int ls,int ts){
+        if(i==nums.length) return -1;                   //base case.
+        int rs=ts-ls-nums[i];                              //core logic.
+        if(ls==rs) return i;
+        return help(nums,i+1,ls+nums[i],ts);             //updation in the recursive calls.
+    }
+}
+
+
+7)  // REMOVE DUPLICATES.
+
+  public class Solution{
+  public static int removedup(int[] nums){
+    if (nums.length == 0) return 0;
+    return help(nums,1,0);
+  }
+  public static int help(int[] nums,int j,int i){
+    if(j==nums.length) return i+1;                  //base case.
+    if(nums[j]!=nums[i]){
+      i++;                                              //core logic.
+      nums[i]=nums[j];
+    }
+    return help(nums,j+1,i);                          //updation in recursive calls.
+  }
+  public static void main(String[] args){
+    Scanner sc=new Scanner(System.in);
+    int[] nums={1,1,2,2,2,3,4,4};
+    int ans=removedup(nums);
+    System.out.println(ans);
+    sc.close();
+  }
+} 
+
+
+8)  // nth Fibonnaci number.
+
+class Solution {
+    public int nthFibonacci(int n) {
+        if (n==0) return 0;
+        if (n==1) return 1;
+        return nthFibonacci(n-1) + nthFibonacci(n-2);
+    }
+}
+
+
+9)  // TOWER OF HANOI.(MIN. NUMBER OF MOVES)
+
+class Solution {                                                                 //This function recursively computes the minimum number of moves needed to solve the Tower of
+       public int towerOfHanoi(int n, int from, int to, int aux)                 Hanoi by using the relation T(n) = 2T(n−1) + 1 with a base case of n = 0. The rod parameters 
+          if(n==0) return 0;                                                      are unused because the move count depends only on the number of disks.
+          return 2*towerOfHanoi(n-1,from,aux,to)+1;
+     }
+}
+    
+   
