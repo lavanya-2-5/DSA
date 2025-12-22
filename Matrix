@@ -1,1 +1,220 @@
+1)  // SPIRAL TRAVERSAL.
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> list=new ArrayList<>();
+        int rows=matrix.length;
+        int cols=matrix[0].length;
+        int top=0;
+        int left=0;
+        int bottom=rows-1;
+        int right=cols-1;
+        while(top<=bottom && left<=right){
+            for(int j=left;j<=right;j++){               //moving left to right. shifting top pointer downwards.
+                list.add(matrix[top][j]);
+            }
+            top++;
+            for(int i=top;i<=bottom;i++){               //moving up to down. shifting right pointer leftwards.
+                list.add(matrix[i][right]);
+            }
+            right--;
+            if(top<=bottom){
+                for(int i=right;i>=left;i--){           //moving right to left. shifting bottom pointer upwards.
+                list.add(matrix[bottom][i]);
+            }
+            bottom--;
+            }
+            if(left<=right){
+            for(int i=bottom;i>=top;i--){             //moving down to up. shifting left pointer rightwards.
+                list.add(matrix[i][left]);
+            }
+            left++;
+            }
+        }
+        return list;
+    }
+}
+
+
+2)  // SEARCHING ELEMENT IN THE MATRIX WITH RULES.
+    * Each row is sorted in non-decreasing order.
+    * The first integer of each row is greater than the last integer of the previous row.
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m=matrix.length;
+        int n=matrix[0].length;
+        int l=0;
+        int h=m*n-1;
+        while(l<=h){                           //BINARY SEARCH ON FLATTENED MATRIX.
+            int mid=l+(h-l)/2;
+            int r=mid/n;                     //converting index into MATRIX row,col.
+            int c=mid%n;
+            int val=matrix[r][c];
+            if(val==target){
+               return true;
+            }
+            else if(val<target){
+               l=mid+1;
+            }
+            else{
+                h=mid-1;
+            }
+        }
+        return false;
+    }
+}
+
+
+3)   // Given an array of integers nums, sort the array in ascending order and return it.
+        You must solve the problem without using any built-in functions in O(nlog(n)).
+
+class Solution {
+    public int[] sortArray(int[] nums) {
+        int n=nums.length;
+        for(int i=n/2-1;i>=0;i--){                   //build max heap.
+            heapify(nums,n,i);
+        }
+        for(int i=n-1;i>0;i--){
+            swap(nums,0,i);                         //move max to end.
+            heapify(nums,i,0);                       //fix remaining heap.
+        }
+        return nums;
+    }
+    public void heapify(int[] nums,int size,int i){
+        int largest=i;
+        int lchild=2*i+1;
+        int rchild=2*i+2;
+        if(lchild<size && nums[lchild]>nums[largest]){
+            largest=lchild;
+        }
+        if(rchild<size && nums[rchild]>nums[largest]){
+            largest=rchild;
+        }
+        if(largest!=i){
+            swap(nums,i,largest);
+            heapify(nums,size,largest);
+        }
+    }
+    public void swap(int[] nums,int i,int j){
+        int temp=nums[i];
+        nums[i]=nums[j];
+        nums[j]=temp;
+    }
+}
+
+
+4)  // FIND MEDIAN IN A ROW-WISE SORTED MATRIX.
+
+class Solution {
+    public int findMedian(int[][] matrix) {
+        int r = matrix.length;
+        int c = matrix[0].length;
+
+        int low = Integer.MAX_VALUE;                        // smallest value in matrix
+        int high = Integer.MIN_VALUE;                      // largest value in matrix
+
+        for (int i = 0; i < r; i++) {
+            low = Math.min(low, matrix[i][0]);               // first element of row
+            high = Math.max(high, matrix[i][c - 1]);         // last element of row
+        } 
+        int median= (r * c) / 2;                        // median index (0-based)
+
+        while (low <= high) {                                          // BINARY SEARCH ON ANSWER.(VALUE RANGE)
+            int mid = low + (high - low) / 2;
+
+            int count = 0;
+            for (int i = 0; i < r; i++) {
+                count += countSmallerEqual(matrix[i], mid);            // count elements <= mid in each row
+            }
+
+            if (count <= median) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return low;                                                             // smallest value with count > required
+    }
+    private int countSmallerEqual(int[] row, int target) {                     // returns count of elements <= target in a sorted row
+        int l = 0, h = row.length - 1;
+        while (l <= h) {
+            int m = l + (h - l) / 2;
+            if (row[m] <= target) {
+                l = m + 1;
+            } else {
+                h = m - 1;
+            }
+        }
+        return l;                                                          // index of first element > target.
+    }
+}
+
+
+5)  // Given a m x n binary matrix mat, find the 0-indexed position of the row that contains the maximum count of ones, and the number of ones in that row.
+
+class Solution {
+    public int[] rowAndMaximumOnes(int[][] mat) {
+        int r=mat.length;
+        int c=mat[0].length;
+        int max1s=Integer.MIN_VALUE;
+        int ind=0;
+        for(int i=0;i<r;i++){                        //iterating row wise and keep track of 1s in each row.
+          int onesInRow=count1(mat[i],1);
+          if(onesInRow>max1s){
+           max1s=onesInRow;
+           ind=i;
+          }
+        }
+          return new int[] {ind,max1s};
+    }
+    public int count1(int[] arr,int target){
+        int count=0;
+        for(int num:arr){
+            if(num==target){
+                count++;
+            }
+        }
+        return count;
+    }
+}
+Time complexity=O(M*N)
+
+
+6)  // rotate the image by 90 degrees (clockwise).
+
+class Solution {
+    public void rotate(int[][] matrix) {
+        int rows=matrix.length;
+        int cols=matrix[0].length;
+        for(int i=0;i<rows;i++){                            //taking transpose of matrix.
+            for(int j=i;j<cols;j++){
+                int temp=0;
+                temp=matrix[i][j];
+                matrix[i][j]=matrix[j][i];
+                matrix[j][i]=temp;
+            }
+        }
+        for(int i=0;i<rows;i++){                            //reverse the matrix row wise.(for clockwise)
+            for(int j=0;j<matrix.length/2;j++){
+                int temp=0;
+                temp=matrix[i][j];
+                matrix[i][j]=matrix[i][rows-1-j];
+                matrix[i][rows-1-j]=temp;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
