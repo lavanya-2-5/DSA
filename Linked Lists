@@ -1,1 +1,245 @@
 
+1)  // Implementation of Singly Linked List.
+
+class MyLinkedList {
+      private class Node{                      //Define the node and core fields.
+            int val;                          //Choose an internal representation.
+            Node next;             
+            Node(int val){
+                this.val=val;
+            }
+      }
+      private Node head;
+      private int size;
+    public MyLinkedList() {
+        head=null;
+        size=0;
+    }
+    
+    public int get(int index) {                    //return value at index if valid; otherwise -1.
+        if(index<0 || index>=size){        
+            return -1;
+        }
+        Node cur=head;
+        for(int i=0;i<index;i++){
+            cur=cur.next;
+        }
+        return cur.val;
+    }
+    
+    public void addAtHead(int val) {                      //new node becomes the first node.
+        Node newnode=new Node(val);
+        newnode.next=head;
+        head=newnode;
+        size++;
+    }
+    
+    public void addAtTail(int val) {                       //append at the end.
+        Node newnode=new Node(val);
+        if(head==null){
+            head=newnode;
+        }
+        else{
+            Node cur=head;
+            while(cur.next!=null){
+                cur=cur.next;
+            }
+            cur.next=newnode;
+        }
+        size++;
+    }
+    
+    public void addAtIndex(int index, int val) {                    //Need the previous node of desired position (index - 1).
+        Node newnode=new Node(val);
+        if(index>size) return ;
+        if(index<=0){
+            addAtHead(val);
+            return;
+        }
+        if(index==size){
+            addAtTail(val);
+            return;
+        }
+        else {
+             Node prev=head;
+            for(int i=0;i<index-1;i++){
+                prev=prev.next;
+            }
+            newnode.next=prev.next;
+            prev.next=newnode;
+            size++;
+        }
+    }
+    
+    public void deleteAtIndex(int index) {                              // find node at index - 1 (previous), then bypass its next.
+        if(index<0 || index>=size) return;
+        if(index==0){
+            head=head.next;
+        }else{
+        Node prev=head;
+        for(int i=0;i<index-1;i++){
+          prev=prev.next;
+        }
+        prev.next=prev.next.next;
+        }
+        size--;
+    }
+}
+
+
+2)  // Implementation od Doubly Linked List.
+
+class MyLinkedList {
+    private class Node {
+        int val;
+        Node prev;
+        Node next;
+        Node(int val) {
+            this.val = val;
+        }
+    }
+    private Node head;
+    private Node tail;
+    private int size;
+    public MyLinkedList() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+    public int get(int index) {
+        if (index < 0 || index >= size) {
+            return -1;
+        }
+        Node cur;
+                                                        // Optional optimization: choose direction based on index
+        if (index < size / 2) {
+            cur = head;
+            for (int i = 0; i < index; i++) {
+                cur = cur.next;
+            }
+        } else {
+            cur = tail;
+            for (int i = size - 1; i > index; i--) {
+                cur = cur.prev;
+            }
+        }
+        return cur.val;
+    }
+    public void addAtHead(int val) {
+        Node node = new Node(val);
+        if (head == null) {
+            head = node;
+            tail = node;
+        } else {
+            node.next = head;
+            head.prev = node;
+            head = node;
+        }
+        size++;
+    }
+    public void addAtTail(int val) {
+        Node node = new Node(val);
+        if (tail == null) { // list is empty
+            head = node;
+            tail = node;
+        } else {
+            tail.next = node;
+            node.prev = tail;
+            tail = node;
+        }
+        size++;
+    }
+    public void addAtIndex(int index, int val) {
+        if (index > size) {
+            return;
+        }
+        if (index <= 0) {
+            addAtHead(val);
+            return;
+        }
+        if (index == size) {
+            addAtTail(val);
+            return;
+        }
+                                                           // Insert before index-th node
+        Node cur;
+        if (index < size / 2) {
+            cur = head;
+            for (int i = 0; i < index; i++) {
+                cur = cur.next;
+            }
+        } else {
+            cur = tail;
+            for (int i = size - 1; i >= index; i--) {
+                cur = cur.prev;
+            }
+        }
+        Node node = new Node(val);
+        Node prevNode = cur.prev;
+        node.prev = prevNode;
+        node.next = cur;
+        prevNode.next = node;
+        cur.prev = node;
+        size++;
+    }
+    public void deleteAtIndex(int index) {
+        if (index < 0 || index >= size) {
+            return;
+        }
+        if (size == 1) {
+                                                                 // Removing the only node
+            head = null;
+            tail = null;
+            size = 0;
+            return;
+        }
+        if (index == 0) {
+                                                               // Remove head
+            head = head.next;
+            head.prev = null;
+            size--;
+            return;
+        }
+        if (index == size - 1) {
+                                                                    // Remove tail
+            tail = tail.prev;
+            tail.next = null;
+            size--;
+            return;
+        }
+                                                                // Remove middle node
+        Node cur;
+        if (index < size / 2) {
+            cur = head;
+            for (int i = 0; i < index; i++) {
+                cur = cur.next;
+            }
+        } else {
+            cur = tail;
+            for (int i = size - 1; i > index; i--) {
+                cur = cur.prev;
+            }
+        }
+        Node prevNode = cur.prev;
+        Node nextNode = cur.next;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+        size--;
+    }
+}
+
+
+3)  // DELETE NODE IN A SINGLY LINKED LIST.(No access to head but only to the node to be deleted).
+
+class Solution {
+    public void deleteNode(ListNode node) {
+        node.val=node.next.val;                                                    //Copy the val from next into the current node.
+        node.next=node.next.next;                                         //Bypass the next node.
+    }
+}
+
+
+4)  // 
+
+
+
