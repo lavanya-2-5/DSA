@@ -239,7 +239,144 @@ class Solution {
 }
 
 
-4)  // 
+4)  // Searching a node in a Linked List.
+
+class Solution{
+    static boolean search(Node head,int key){
+       Node cur=head;
+       while(cur.next!=null){
+          if(cur.val==key){
+            return true;             //key found.
+                } 
+        cur=cur.next;
+       }
+     return false;                //key not found.
+    }
+}
 
 
+5)  // Count number of nodes in a linked list.
 
+class Solution {
+    public int getCount(Node head) {
+       Node curr=head;
+       int count=0;
+       while(curr!=null){
+           count++;
+           curr=curr.next;
+       }
+        return count;
+    }
+}
+
+
+6)  // Reverse a Linked List.
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head==null) return null;
+        if(head.next==null) return head;
+        ListNode preNode=null;                      //taking help of a prenode node whose value is null.
+        ListNode currNode=head;
+        while(currNode!=null){
+            ListNode nextNode=currNode.next;
+            currNode.next=preNode;
+            preNode=currNode;
+            currNode=nextNode;
+        }
+       head=preNode;
+       return head;
+           }
+}
+
+
+7)  // Find middle of the Linked List.   
+
+class Solution {
+    public ListNode middleNode(ListNode head) {   //Using Hare and Tortoise algo (Slow and Fast pointers).
+        ListNode slow=head;
+        ListNode fast=head;
+
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+        }
+        return slow;
+    }
+}
+
+
+8)  // Merge two sorted lists.
+
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+     ListNode newlist=new ListNode(Integer.MIN_VALUE);                                      //create a dummy node to start(to store the result list)
+     ListNode headnode=newlist;                                                        //create a copy of this node to iterate while solving the problem.
+      while(list1!=null && list2!=null){                                                  //traverse till one of the list reaches the end.                                                     
+        if(list1.val<=list2.val){                          // compare the 2 values of the list.
+            newlist.next=list1;
+            list1=list1.next;
+        }
+        else{
+            newlist.next=list2;
+            list2=list2.next;
+        }
+        newlist=newlist.next;
+      }
+    if(list1==null) {                                              //append the remaining list.
+        newlist.next=list2;
+    } 
+    else if(list2==null){
+        newlist.next=list1;
+    }
+        return headnode.next;
+    }
+}
+
+
+9)  // Add two numbers.
+
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy=new ListNode(Integer.MIN_VALUE);
+        ListNode copy=dummy;
+        int carry=0;
+        while(l1!=null || l2!=null){//works if either of the 2 condition is true
+            int sum=0+carry;
+            if(l1!=null){
+             sum=sum+l1.val;
+             l1=l1.next;
+            }
+            if(l2!=null){
+                sum=sum+l2.val;
+                l2=l2.next;
+            }
+            carry=sum/10;
+            sum=sum%10;
+            dummy.next=new ListNode(sum);
+            dummy=dummy.next;
+        }
+        if(carry==1) dummy.next=new ListNode(1);
+        return copy.next;
+    }
+}
+
+
+10)  // Remove Duplicates from Sorted Lists.
+
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head==null || head.next==null) return head;
+        ListNode prenode=head;
+        ListNode curr=head.next;
+        while(curr!=null){
+            if(curr.val!=prenode.val){                          // Found a unique value.
+                prenode.next=curr;                               // Link to unique node.
+                prenode=curr;                                  // Move prenode forward.
+            }
+            curr=curr.next;                                         // If duplicate, just skip (move curr only).
+        }
+        prenode.next=null;                                       // Cut off any remaining duplicates at the end
+        return head;
+    }
+}
