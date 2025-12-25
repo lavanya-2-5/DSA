@@ -1,1 +1,71 @@
+1)  // Implementation of Stack.
+
+class Stack {
+    private static final int STACK_CAPACITY = 101;
+    private char[] stackArray = new char[STACK_CAPACITY];
+    private int topIndex = -1;
+    void push(char character) {
+        if(isFull()){                                               // If stack is full (check using isFull function)
+            System.out.println("Stack is full");                            // Then print "Stack is full"
+        }else{                                                      // Otherwise add the next element at topIndex + 1 and update topIndex.
+            stackArray[++topIndex]=character;
+        }
+    }
+    char pop() {
+        if(isEmpty()){                                              // If the stack is empty (check using isEmpty function).
+            System.out.println("Stack is empty");                         // Then print "Stack is empty" and return '0'.
+            return '\0';                                                      // Otherwise return the element at the topIndex.
+        }else{
+            return stackArray[topIndex--];                                     // But reduce topIndex before returning the element.
+        }
+    }
+    boolean isEmpty() {
+        return topIndex == -1;
+    }
+    boolean isFull() {
+        return topIndex >= STACK_CAPACITY - 1;
+    }
+}
+class ReverseString {
+    public static void main(String[] args) {
+        String inputString = "Hello, World!";
+        int inputLength = inputString.length();
+        Stack charStack = new Stack();
+        for (int i = 0; i < inputLength; i++) {                     // Push each character onto the stack.
+            char currentChar = inputString.charAt(i);
+            charStack.push(currentChar);
+        }
+        StringBuilder reversedString = new StringBuilder();             // Pop the characters from the stack to construct the reversed string.
+        while (!charStack.isEmpty()) {
+            reversedString.append(charStack.pop());
+        }
+        System.out.println(reversedString.toString());
+    }
+}
+
+
+2)  // Next greater element 1. (Monotonic Stack + Hashmap)
+
+class Solution {
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        Stack<Integer> stack=new Stack<>();                        
+        HashMap<Integer,Integer> map=new HashMap<>();
+        for(int num:nums2){
+            while(!stack.isEmpty() && stack.peek()<num){                      //Remove smaller elements when a bigger one comes.
+                 map.put(stack.pop(),num); 
+            }                                                               //Elements waiting for their next greater element.
+            stack.push(num);
+        }
+        int[] ans=new int[nums1.length];
+        for(int i=0;i<nums1.length;i++){
+        ans[i]=map.getOrDefault(nums1[i],-1);
+        }
+        return ans;
+    }
+}
+//The stack stores elements that haven’t yet found a greater element to their right. When a bigger number appears, it resolves all smaller elements on the stack.
+
+
+3)  // Find Smaller on left.
+
 
