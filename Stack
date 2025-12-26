@@ -112,4 +112,84 @@ class Solution {
 }
 
 
-5)  // 
+5)  // Min Stack.
+
+class MinStack {
+    Stack<Integer> stack;
+    Stack<Integer> minstack;
+    public MinStack() {
+        stack=new Stack<>();
+        minstack=new Stack<>();
+    }
+    public void push(int val) {
+        stack.push(val);
+        if(minstack.isEmpty() || val<=minstack.peek()){
+            minstack.push(val);
+        }
+    } 
+    public void pop() {
+        int popped=stack.pop();
+        if(popped==minstack.peek()){
+            minstack.pop();
+        }
+    }
+    public int top() {
+        return stack.peek();
+    } 
+    public int getMin() {
+        return minstack.peek();
+    }
+}
+
+
+6)  // Asteroid collisions
+
+class Solution {
+    public int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> stack=new Stack<>();
+        for(int num:asteroids){
+            Boolean alive=true;
+            while(alive && !stack.isEmpty() && stack.peek()>0 && num<0){
+                if(stack.peek()<-num){
+                    stack.pop();
+                }else if(stack.peek()==-num){
+                    stack.pop();
+                    alive=false;
+                }else{
+                    alive=false;
+                }
+            }
+            if(alive){
+                stack.push(num);
+            }
+        }
+        int[] arr=new int[stack.size()];
+        for(int i=arr.length-1;i>=0;i--){
+            arr[i]=stack.pop();
+        }
+        return arr;
+    }
+}
+This is a stack simulation problem.
+Collision occurs only when a positive asteroid meets a negative one.
+I use a stack to simulate collisions and resolve them using a while loop.
+
+7)  // Online Stock Span.
+
+class StockSpanner {                            //monotonic decreasing stack is used. 
+     Stack<int[]> stack;
+    public StockSpanner() {
+        stack=new Stack<>();
+    }
+    
+    public int next(int price) {
+        int span=1;
+        while(!stack.isEmpty() && stack.peek()[0]<=price){
+           span=span+stack.peek()[1];
+           stack.pop();
+        }
+        stack.push(new int[]{price,span});
+        return span;
+    }
+} 
+I use a monotonic decreasing stack storing (price, span). I merge spans while popping smaller prices.
