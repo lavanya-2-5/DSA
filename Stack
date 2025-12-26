@@ -66,6 +66,50 @@ class Solution {
 //The stack stores elements that haven’t yet found a greater element to their right. When a bigger number appears, it resolves all smaller elements on the stack.
 
 
-3)  // Find Smaller on left.
+3)  // Find Smaller on left.(Based On TreeSet).
+
+class Complete {
+
+    // Function for finding maximum and value pair
+    public static int[] Smallestonleft(int arr[], int n) {
+      int[] ans=new int[n];
+      TreeSet<Integer> tset=new TreeSet<>();                            //like a rbtree ,always keeps elements sorted.
+      for(int i=0;i<n;i++){
+          Integer val=tset.lower(arr[i]);                          //set.lower() gives value exactly < arrr[i].
+          if(val==null){                                       //if no value exists.
+              ans[i]=-1;
+          }else{
+              ans[i]=val;
+          }
+          tset.add(arr[i]);
+      }
+      return ans;
+    }
+}
 
 
+4)  // Valid Parentheses.
+
+class Solution {
+    public boolean isValid(String s) {
+       Stack<Character> stack=new Stack<>();
+       for(char c:s.toCharArray()){                  //if opening bracket is encountered,then push closing bracket.
+        if(c=='('){                                  //if closing bracket is encountered,then check the popped value matches it or not.
+            stack.push(')');
+        }
+        else if(c=='{'){
+                stack.push('}');
+        }
+        else if(c=='['){
+            stack.push(']');
+        }
+        else if(stack.isEmpty() || stack.pop()!=c){
+            return false;
+        }
+       } 
+       return stack.isEmpty();
+    }
+}
+
+
+5)  // 
