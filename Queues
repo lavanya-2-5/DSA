@@ -1,1 +1,97 @@
 1)  // Implementation of queues.
+
+class myQueue {
+    int[] arr;
+    int size;
+    int front;
+    int rear;   
+    public myQueue(int n) {
+                                                         // Define Data Structures
+        arr=new int[n];
+        size=n;
+        front=-1;
+        rear=-1;
+    }
+    public boolean isEmpty() {
+           return front==-1;                                                           // Check if queue is empty
+    }
+    public boolean isFull() {
+       return (front==0 && rear==size-1) || (rear==(front-1+size)%size);          // Check if queue is full
+    }
+    public void enqueue(int x) {
+        if(isFull()){                                              // Enqueue
+            return;
+        }                                                                             
+        if(front==-1){
+            front=0;
+            rear=0;
+        } else if (rear == size - 1 && front != 0) {
+            rear = 0;
+        }else{
+            rear++;
+        }
+        arr[rear]=x;
+    }
+    public void dequeue() {
+        if(isEmpty()){                           // Dequeue
+            return; 
+        }
+        if(front==rear){           //only 1 element.
+            front=-1;
+            rear=-1;
+        }else if(front==size-1){
+            front=0;
+        } 
+        else{
+            front++;
+        }
+    }
+    public int getFront() {
+        if(isEmpty()) return -1;                     // Get front element
+        return arr[front];
+    }
+    public int getRear() {
+        if(isEmpty()) return -1;                      // Get last element
+        return arr[rear];    
+    }
+}
+Circular Queue is a queue where the last position is connected back to the first to reuse empty spaces.
+
+
+2)  // Queue using two Stacks.
+
+class MyQueue {
+     Stack<Integer> instack;
+     Stack<Integer> outstack;
+    public MyQueue() {
+        instack=new Stack<>();
+        outstack=new Stack<>();
+    }   
+    public void push(int x) {
+        instack.push(x);
+    }
+    public int pop() {
+        if(outstack.isEmpty()){
+            while(!instack.isEmpty()){
+                outstack.push(instack.pop());
+            }
+        }
+        return outstack.pop();
+    }
+    public int peek() {
+        if(outstack.isEmpty()){
+            while(!instack.isEmpty()){
+            int val=instack.pop();
+            outstack.push(val);
+        }
+        }
+        return outstack.peek();
+    }
+    public boolean empty() {
+        return instack.isEmpty() && outstack.isEmpty();
+    }
+}
+
+
+
+
