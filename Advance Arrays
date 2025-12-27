@@ -1,1 +1,153 @@
+1)  // Two Sum.
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {             //using one pass hashtable.
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] { map.get(complement), i };
+            }
+            map.put(nums[i], i);
+        }
+        return new int[] {};                              // Return an empty array if no solution is found
+    }
+}
+
+
+2)  // Best Time to Buy and Sell Stock.
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int min=Integer.MAX_VALUE;
+        int maxpr=0;
+        for(int price:prices){
+            if(price<min){
+                min=price;
+            }else{
+                maxpr=Math.max(maxpr,price-min);
+            }
+        }
+        return maxpr;
+    }
+}
+
+
+3)  // Sort Colors. (Dutch National Flag Algorithm).
+
+class Solution {
+    public void sortColors(int[] nums) {
+        int l=0;
+        int m=0;
+        int h=nums.length-1;
+        while(m<=h){
+            if(nums[m]==0){
+                swap(nums,l,m);
+                l++;
+                m++;
+            }else if(nums[m]==1){
+                m++;
+            }else{
+                swap(nums,m,h);
+                h--;
+            }
+        }
+    }
+     void swap(int[] nums,int i,int j){
+        int temp=nums[i];
+        nums[i]=nums[j];
+        nums[j]=temp;
+    }
+}
+
+
+4)  // Container with Most Water.
+
+class Solution {
+    public int maxArea(int[] height) {
+       int l=0;
+       int h=height.length-1;
+       int area=0;
+       while(l<h){                                         //just shrink the array from both sides according to the minimum height.
+        int b=h-l;
+        int ht=Math.min(height[l],height[h]);
+        area=Math.max(area,b*ht);
+        if(height[l]<height[h]){
+            l++;
+        }else{
+            h--;
+        }
+       } 
+       return area;
+    }
+}
+
+
+5)  // Merge Sorted Arrays.
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m-1;                                            //maintain 3 pointers.
+        int j=n-1;
+        int k=m+n-1;
+        while(j>=0){
+          if(i>=0 && nums1[i]>nums2[j]){
+            nums1[k]=nums1[i];
+            k--;
+            i--;
+          }
+          else{
+            nums1[k]=nums2[j];
+            j--;
+            k--;
+          }
+        }
+    }
+}
+
+
+6)  // Trapping Rain Water.
+
+class Solution {
+    public int trap(int[] height) {
+        int waterTrapped=0;
+        int left=0,right=height.length-1;
+        int leftMax=0, rightMax=0;
+        while(left<right){
+            if(height[left]<height[right]){
+                if(height[left]>=leftMax){
+                    leftMax=height[left];
+                }
+                else
+                {
+                    waterTrapped+=leftMax-height[left];
+                }
+                left++;
+            }
+            else{
+                if(height[right]>=rightMax){
+                    rightMax=height[right];
+                }
+                else
+                {
+                 waterTrapped+=rightMax-height[right];
+                }
+                right--;
+            }
+        }
+        return waterTrapped;
+    }
+}
+Whichever side is shorter decides how much water can be stored there.
+
+
+
+
+
+
+
+
+
+
+
 
