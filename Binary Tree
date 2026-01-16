@@ -1,1 +1,64 @@
+1)  // Implementation of binary tree using arrays.
 
+class Solution {
+    public TreeNode createBinaryTree(int[][] descriptions) {
+        HashMap<Integer,TreeNode> map=new HashMap<>();
+        HashSet<Integer> childset=new HashSet<>();
+        for(int[] d:descriptions){
+            int parent=d[0];
+            int child=d[1];
+            int isleft=d[2];
+
+            map.putIfAbsent(parent,new TreeNode(parent));            //insert in map if not aalready there.
+            map.putIfAbsent(child,new TreeNode(child));
+
+            if(isleft==1){                                              //check if it is a right child or left child.
+                map.get(parent).left=map.get(child);
+            }else{
+                map.get(parent).right=map.get(child);
+            }
+            childset.add(child);                                         //mark the nodes that have already become child nodes by adding in the hashset.                                   
+        }
+        for(int[] d:descriptions){                                // find which node has not become child node (is the root node).
+            int rt=d[0];
+            if(!childset.contains(rt)){
+                return map.get(rt);
+            }
+        }
+        return null;
+    }
+}
+
+
+2)  // PREORDER TRAVERSAL OF BINARY TREE.
+
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {         //preorder- ROOT,LEFT,RIGHT.
+        List<Integer> list=new ArrayList<>();
+        helper(root,list);
+        return list;
+    }
+    public void helper(TreeNode root,List<Integer> list){
+     if(root==null) return;
+     list.add(root.val);
+     helper(root.left,list);
+     helper(root.right,list);
+    }
+}
+
+
+3)  // INORDER TRAVERSAL OF BINARY TREE.
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list=new ArrayList<>();
+        helper(root,list);
+        return list;
+    }
+    public void helper(TreeNode root,List<Integer> list){     //inorder- LEFT,ROOT,RIGHT.
+        if(root==null) return;
+        helper(root.left,list);
+        list.add(root.val);
+        helper(root.right,list);
+    }
+}
