@@ -144,11 +144,194 @@ class Solution {
 
 4)  // Missing Number.
 
+class Solution {
+    public int missingNumber(int[] nums) {
+      int n=nums.length;
+        int sum=0;
+        for(int i=0;i<n;i++){
+        sum=sum+nums[i];
+        }
+        int ActSum;
+        ActSum=n*(n+1)/2;
+        int ans=ActSum-sum;
+        return ans;
+    }
+}
 
 
+5)  // Intersection of Two Arrays.
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        HashSet<Integer> set1=new HashSet<>();                          //adding all elements of nums1 to set1.
+        for(int num:nums1){
+            set1.add(num);
+        }
+        HashSet<Integer> resultset=new HashSet<>();                     //matching the elements of nums2 with nums1 and adding to another hashset to ensure unique elements.
+        for(int num:nums2){
+            if(set1.contains(num)){
+                resultset.add(num);
+            }
+        }
+        int[] arr=new int[resultset.size()];                         //transfer the elements to an array to return.
+        int i=0;
+        for(int num:resultset){
+            arr[i++]=num;
+        }
+        return arr;
+    }
+}
 
 
+6)  // Set Matrix Zeroes.
+
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int col0=1;                                        //col0 states if column 0 has to be 0 or not in the last.
+        int rows=matrix.length; 
+        int cols=matrix[0].length; 
+        for(int i=0;i<rows;i++){                               
+            if(matrix[i][0]==0) col0=0;                     //if any of the element in the 0th column is 0 then set col0 to 0.
+            for(int j=1;j<cols;j++){
+                if(matrix[i][j]==0){                          //if any element is 0 from 1st col. to last ,then set its topmost and leftmost to 0.
+                    matrix[i][0]=matrix[0][j]=0;
+                }
+            }
+        }
+        for(int i=rows-1;i>=0;i--){                           //traverse from the bottom right .
+            for(int j=cols-1;j>=1;j--){
+                if(matrix[i][0]==0 || matrix[0][j]==0){        //for every element , if its topmost or rightmost is 0 then set it to 0.
+                    matrix[i][j]=0;
+                }}
+                if(col0==0) {                                  // if col0 is 0 then whole column0 will be set to 0 otherwise no change.
+                    matrix[i][0]=0;
+        }
+        }
+    }
+}
 
 
+7)  // Valid Anagram.
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+       int[] alphabet = new int[26];
+        
+        for (int i = 0; i < s.length(); i++) {
+            alphabet[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < t.length(); i++) {
+            alphabet[t.charAt(i) - 'a']--;
+        }
+        for (int i : alphabet) {
+            if (i != 0) {
+                return false; 
+    }
+}
+return true;
+    }
+}
 
 
+8)  // Longest Consecutive sequence.
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set=new HashSet<>();
+        for(int i:nums){                                         //adding all elements in the set.
+            set.add(i);
+        }
+        int longestL=0;
+        for(int num:set){
+            if(!set.contains(num-1)){                         //if num-1 doesnt exist in the set, it means nums is the smallest values, start counting the greater elements. 
+                int currentL=1;
+                int currNum=num;
+                while(set.contains(currNum+1)){
+                    currentL++;
+                    currNum++;
+                }
+              longestL=Math.max(longestL,currentL);             //store the longest sequence to compare with the future sequence.
+            }
+        }
+        return longestL;
+    }
+}
+
+
+9)  // Longest Substring Without Repeating Characters.
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int start=0;
+        int end=0;
+        int maxLength=0;
+        HashSet<Character> set=new HashSet<>();
+         while(end<s.length()){
+            char current=s.charAt(end);
+            if(!set.contains(current)){                           //if the char is unique , then add it to the set and increase the end pointer.
+                set.add(current);
+                maxLength=Math.max(maxLength,end-start+1);
+                end++; 
+            }
+            else{
+                set.remove(s.charAt(start));                        //if it is duplicate, then remove from the set and shrink the window until a valid window is found.
+                start++;
+            }
+         }
+         return maxLength;
+    }
+}
+
+
+10)  // Bulls And Cows.
+
+APPROACH 1- Using HashMap(2 passes)
+class Solution {
+    public String getHint(String secret, String guess) {
+        int bulls=0;
+        int cows=0;
+        HashMap<Character,Integer> map=new HashMap<>();
+        for(int i=0;i<secret.length();i++){                        //1st pass for bulls.
+            char s=secret.charAt(i);
+            char g=guess.charAt(i);
+            if(s==g){
+                bulls++;                                      //if both characters are equal at the same index then bulls++.
+            }else{
+                map.put(s,map.getOrDefault(s,0)+1);            //otherwise add in the map with their frequency.
+            }
+        }
+        for(int i=0;i<secret.length();i++){                        //2nd pass for cows.
+            char s=secret.charAt(i);
+            char g=guess.charAt(i); 
+            if(s!=g && map.containsKey(g)&& map.get(g)>0){             //index should not be equal, must exist in map, freq must be greater than 0.
+                cows++;
+                map.put(g,map.get(g)-1);
+            }
+        }
+        return bulls+"A"+cows+"B";
+    }
+}
+
+APPROACH 2- Using Arrays(1 pass balance).
+class Solution {
+    public String getHint(String secret, String guess) {
+     int bulls=0;
+     int cows=0;
+     int[] arr=new int[10];                                  //taking an array of size 10.
+     for(int i=0;i<secret.length();i++){
+        int s=secret.charAt(i)-'0';
+        int g=guess.charAt(i)-'0';
+        if(s==g) bulls++;
+        else{
+            if(arr[s]<0) cows++;
+            if(arr[g]>0) cows++;
+            arr[s]++;
+            arr[g]--;        
+     } 
+     }  
+     return bulls+"A"+cows+"B";
+    }
+}
+
+
+11)  // 
