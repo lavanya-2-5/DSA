@@ -1,1 +1,154 @@
+1)  // HashMap Implementation.
+
+class MyHashMap {
+    class Entry{                                        //each node in the ll is denoted by a Entry.
+        int key;
+        int val;
+        Entry(int key,int val){
+            this.key=key;
+            this.val=val;
+        }
+    }
+    LinkedList<Entry>[] mp;                               //array of linkedlist where each entry(node) has a key and value. 
+    public static int Size=769;                           //If Size is not prime, patterns in keys can cause clustering.(all would land in the same bucket).
+    public MyHashMap() {
+        mp=new LinkedList[Size];
+    }
+    
+    public void put(int key, int value) {
+        int bucket=key % Size;
+        if(mp[bucket]==null){
+            mp[bucket]=new LinkedList<Entry>();
+            mp[bucket].add(new Entry(key,value));
+        }else{
+        for(Entry entry:mp[bucket]){
+            if(entry.key==key){
+              entry.val=value;
+              return;
+            }
+        }
+        mp[bucket].add(new Entry(key,value));
+    }
+ }
+
+    public int get(int key) {
+        int bucket=key % Size;
+        if(mp[bucket]==null) return -1;
+        for(Entry entry:mp[bucket]){
+            if(entry.key==key){
+                return entry.val;
+            }
+        }
+        return -1;
+    }
+    
+    public void remove(int key) {
+        int bucket=key % Size;
+        Entry toRemove=null;
+        if(mp[bucket]==null){
+            return;
+        }else{
+            for(Entry entry:mp[bucket]){
+                if(entry.key==key){
+                    toRemove=entry;
+                }
+            }
+        if(toRemove==null) return;
+        mp[bucket].remove(toRemove);
+        }
+    }
+}
+
+PUT OPERATION ALGO-
+1. Calculate bucket index using hash function
+2. If bucket is empty:
+      create a new LinkedList
+      add the entry
+3. Else:
+      traverse the LinkedList
+      if key found → update value
+      else → add new entry at end
+
+GET OPERATION ALGO-
+1. Calculate bucket index
+2. If bucket empty → return -1
+3. Traverse LinkedList
+4. If key found → return value
+5. After full traversal → return -1
+
+REMOVE OPERATION ALGO-
+1. Calculate bucket index
+2. If bucket empty → return
+3. Traverse LinkedList
+4. If key found → remove that Entry
+
+
+2)  // Two Sum
+
+class Solution {                                           //One Pass HashMap.
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map=new HashMap<>();
+        for(int i=0;i<nums.length;i++){
+            int complement=target-nums[i];
+            if(map.containsKey(complement)){
+                return new int[] {map.get(complement),i};
+            }
+            map.put(nums[i],i);
+        }
+        return new int[] {};
+    }
+}
+
+
+3)  // Highest Frequency Character.
+
+APPROACH 1- Using Array- 
+class Solution {
+    public char getMaxOccuringChar(String s) {
+        int m=Integer.MIN_VALUE;
+        int[] arr=new int[26];
+        for(int i=0;i<s.length();i++){
+            arr[s.charAt(i)-'a']++;
+            m=Math.max(m,arr[s.charAt(i)-'a']);         //keeping track of max. freq.
+        }
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]==m){                               //finding the first character that matches the max. freq.
+                return (char)('a'+i);
+            }
+        }
+        return '\0';
+    }
+}
+
+APPROACH 2- Using HashMap-
+class Solution {
+    public char getMaxOccuringChar(String s) {
+        HashMap<Character,Integer> map=new HashMap<>();
+        int maxF=0;
+        char ans='{';                                                    //ascii value is 123.
+        for(int i=0;i<s.length();i++){
+            char ch=s.charAt(i);
+            int freq=map.getOrDefault(ch,0)+1;
+            map.put(ch,freq);
+            if(freq>maxF){
+                maxF=freq;
+                ans=ch;
+            }else if(freq==maxF && ch<ans){                        //maintains the lexicographically smaller alphabet.
+                ans=ch;
+            }
+        }
+        return ans;
+    }
+}
+
+
+4)  // Missing Number.
+
+
+
+
+
+
+
+
 
