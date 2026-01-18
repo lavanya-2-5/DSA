@@ -82,6 +82,61 @@ class Solution {
 }
 
 
-5)  // 
+5)  // Check Max Heap of a given binary tree.
+
+class Solution {
+    public boolean isHeap(Node tree) {
+        if(tree==null) return true;
+        Queue<Node> q=new LinkedList<>();
+        q.add(tree);
+        Boolean seenNull=false;
+        while(!q.isEmpty()){                                            //level order traversal for checking completeness.
+            Node cur=q.poll();
+            if(cur==null){
+                seenNull=true;
+            }else{
+                if(seenNull) return false;
+                if(cur.left!=null && cur.data<cur.left.data){                  //parent>=children.
+                    return false;
+                }
+                if(cur.right!=null && cur.data<cur.right.data){
+                    return false;
+                }
+                 q.add(cur.left);                                          //add the children only when cur is not null otherwise it will give nullPointerException.
+                 q.add(cur.right);
+            }
+        }
+        return true;
+    }
+}
 
 
+6)  // Top K frequent elements.
+
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer,Integer> map=new HashMap<>();
+        for(int i=0;i<nums.length;i++){
+            map.put(nums[i],map.getOrDefault(nums[i],0)+1);
+        }
+        PriorityQueue<Integer> pq=new PriorityQueue<>((a,b)->map.get(a)-map.get(b));        //Min-Heap but comparison will be done on the basis of frequencies and not value.
+        for(int num:map.keySet()){
+            pq.add(num);                                                           //elements are getting added in the pq.
+            if(pq.size()>k){
+                pq.poll();                                                 //deleting on the basis of comparison of frequencies in min heap.(lowest freq. element is deleted)
+            }
+        }
+        int[] res=new int[k];
+        int i=0;
+        while(!pq.isEmpty()){                                            //transfer the elements from pq into an array.
+            res[i]=pq.poll();
+            i++;
+        }
+        return res;
+    }
+}
+Although we insert numbers into the priority queue, the comparator orders them based on their frequency stored in the hashmap, 
+effectively making it a min-heap by frequency.
+
+
+7)  // Maximum sliding window.
