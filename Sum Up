@@ -1,1 +1,61 @@
+1)  // Sum Of Leaves.
+
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        if(root==null) return 0;
+        int sum=0;
+        if(root.left!=null && root.left.left==null && root.left.right==null){
+            sum=sum+root.left.val;
+        }
+        sum+=sumOfLeftLeaves(root.left);                //only the parent can tell if it is a left child or not so we will recursively apply it to every node.
+        sum+=sumOfLeftLeaves(root.right);
+        return sum;
+    }
+}
+
+
+2)  // Top View of Binary Tree.
+
+class Solution {
+    class CNode{
+        Node node;
+        int col;
+        CNode(Node node,int col){
+            this.node=node;
+            this.col=col;
+        }
+    }
+    public ArrayList<Integer> topView(Node root) {
+        ArrayList<Integer> ans=new ArrayList<>();
+        if(root==null) return ans;
+        Queue<CNode> q=new LinkedList<>();
+        TreeMap<Integer,Integer> tm=new TreeMap<>();
+        q.offer(new CNode(root,0));
+        while(!q.isEmpty()){
+            CNode custNode=q.poll();
+            Node node=custNode.node;
+            int col=custNode.col;
+            if(!tm.containsKey(col)){
+                tm.put(col,node.data);
+            }
+            if(node.left!=null){
+                q.offer(new CNode(node.left,col-1));
+            }
+            if(node.right!=null){
+                q.offer(new CNode(node.right,col+1));
+            }
+    }
+    for(Map.Entry<Integer,Integer> entry:tm.entrySet()){
+        ans.add(entry.getValue());
+    }
+    return ans;
+}
+}
+We perform level order traversal while tracking each node’s horizontal distance (column).
+For each column, we store only the first node encountered in a TreeMap, which represents the topmost visible node from left to right.
+Time compl.- O(n log n)
+space-O(N)
+
+
+3)  // Bottom View of Binary Tree.
 
