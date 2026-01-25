@@ -59,3 +59,84 @@ space-O(N)
 
 3)  // Bottom View of Binary Tree.
 
+class Solution {
+    class CNode{
+        Node node;
+        int col;
+        CNode(Node node,int col){
+            this.node=node;
+            this.col=col;
+        }
+    }
+    public ArrayList<Integer> bottomView(Node root) {
+        ArrayList<Integer> ans=new ArrayList<>();
+        if(root==null) return ans;
+        TreeMap<Integer,Integer> tm=new TreeMap<>();
+        Queue<CNode> q=new LinkedList<>();
+        q.offer(new CNode(root,0));
+        while(!q.isEmpty()){
+            CNode custnode=q.poll();
+            Node node=custnode.node;
+            int col=custnode.col;
+            tm.put(col,node.data);                                         //we need the latest value of node in the treeMap and not the first one.
+            if(node.left!=null){
+                q.offer(new CNode(node.left,col-1));
+            }
+            if(node.right!=null){
+                q.offer(new CNode(node.right,col+1));
+            }
+        }
+        for(Map.Entry<Integer,Integer> entry:tm.entrySet()){
+            ans.add(entry.getValue());
+        }
+        return ans;
+    }
+}
+
+
+4)  // Find all anagrams in the string.
+
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        int wind=p.length();
+        List<Integer> ans=new ArrayList<>();
+        if(p.length()>s.length()) return ans;  
+        int[] freqp=new int[26];
+        int[] freqs=new int[26];
+        for(char c:p.toCharArray()){                                         // fixed size sliding window with frequency arrays.
+            freqp[c-'a']++;
+        }
+        for(int i=0;i<s.length();i++){
+            freqs[s.charAt(i)-'a']++;
+           if(i>=wind){
+            freqs[s.charAt(i-wind)-'a']--;
+           }
+           if(Arrays.equals(freqs,freqp)){
+            ans.add(i-wind+1);
+           }
+        }
+        return ans;
+    }
+}
+
+
+5)  // Isomorphic string.
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if(s.length()!=t.length()) return false;
+        int[] arr1=new int[256];
+        int[] arr2=new int[256];
+        for(int i=0;i<s.length();i++){
+            char c1=s.charAt(i);
+            char c2=t.charAt(i);
+            if(arr1[c1]!=0 && arr1[c1]!=c2) return false;
+            if(arr2[c2]!=0 && arr2[c2]!=c1) return false;
+            arr1[c1]=c2;
+            arr2[c2]=c1;
+         }
+        return true;
+    }
+}
+space-O(1)
+time- O(n)
