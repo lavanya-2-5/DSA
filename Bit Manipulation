@@ -1,1 +1,49 @@
+1)  // You are given a number n. Find the total count of set bits for all numbers from 1 to n (both inclusive).
 
+class Solution {
+    public static int countSetBits(int n) {
+        int total=0;
+        int x=1;
+        while(x<=n){
+            int fullC=(n+1)/(2*x);
+            total=total+fullC*x;
+            int rem=(n+1)%(2*x);
+            total+=Math.max(0,rem-x);
+            x<<=1;
+        }
+     return total;   
+    }
+}
+
+
+2)  // The problem is to toggle the bits in the range l to r in the binary representation of n i.e. to toggle bits from the lth least significant bit to the rth 
+least significant bit (the rightmost bit as counted as the first bit).
+
+class solution{
+static int toggleBits(int n,int l,int r){
+ int length=r-l+1;
+int mask=((1<<length)-1)<<(l-1);
+return n^mask;
+  }
+}
+
+
+3)  // Given two positive integer n and  k, check if the kth index bit of n is set or not.
+
+class CheckBit {
+    static boolean checkKthBit(int n, int k) {
+        return (n&(1<<k))!=0;
+    }
+}
+
+
+4)  // Power Of Two.
+
+class Solution {
+    public boolean isPowerOfTwo(int n) {
+        return n>0 && (n&(n-1))==0;
+    }
+}
+
+
+5)  // 
