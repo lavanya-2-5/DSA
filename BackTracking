@@ -1,1 +1,52 @@
+1)  // Escape a large maze.
 
+class Solution {
+    static final int LIM=(200*199)/2;                                            // Max cells that 200 blocks can enclose.
+    public boolean isEscapePossible(int[][] blocked, int[] source, int[] target) {
+      Set<Long> blockset=new HashSet<>();
+      for(int[] b:blocked){                                                            // Convert blocked cells to HashSet for O(1) lookup.
+        blockset.add(encode(b[0],b[1]));
+      }
+     return bfs(source, target,blockset) && bfs(target,source,blockset);                     // Check both directions.
+    }
+
+    static boolean bfs(int[] source, int[] target,Set<Long> blockset){
+    Queue<int[]> q=new LinkedList<>();
+    Set<Long> vis=new HashSet<>();
+    q.offer(source);
+    vis.add(encode(source[0],source[1]));
+    int[][] dir={{1,0},{-1,0},{0,-1},{0,1}};
+    while(!q.isEmpty()){
+        int[] curr=q.poll();
+        if(curr[0]==target[0] && curr[1]==target[1]){                          // If we reached the destination.
+            return true;
+        }
+        for(int[] d:dir){
+            int nx=curr[0]+d[0];
+            int ny=curr[1]+d[1];
+        
+        if(nx<0 || ny<0 || nx>=1_000_000 || ny>=1_000_000){
+            continue;
+        }
+        long c=encode(nx,ny);
+        if(blockset.contains(c) || vis.contains(c)){
+            continue;
+        }
+        vis.add(c);
+        q.offer(new int[]{nx,ny});
+    } 
+    if(vis.size()>LIM){                                             // Escaped the possible enclosure.
+        return true;
+    }
+    }
+    return false;                                        // BFS ended without escape or reaching target → trapped.
+    }
+    private static long encode(int x,int y){                               // Encode (x, y) into one long value.
+        return ((long)x<<20) | y;
+    }
+}
+Time- O(20,000)
+Space- O(20,000).
+
+
+2)  // 
