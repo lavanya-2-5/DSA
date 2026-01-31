@@ -49,4 +49,156 @@ Time- O(20,000)
 Space- O(20,000).
 
 
-2)  // 
+2)  // N-Queens.
+
+class Solution {
+    List<List<String>> res;
+    boolean[] col,d1,d2;
+    int n;
+    public List<List<String>> solveNQueens(int n) {
+       this.n=n;
+       res=new ArrayList<>();
+       col=new boolean[n];
+       d1=new boolean[2*n];
+       d2=new boolean[2*n];
+       char[][] brd=new char[n][n];
+       for(int i=0;i<n;i++){
+        Arrays.fill(brd[i],'.');
+       }
+       dfs(brd,0);
+       return res;
+    }
+    public void dfs(char[][] brd,int row){
+    if(row==n){
+        List<String> rows=new ArrayList<>();
+        for(char[] r:brd){
+         rows.add(new String(r));
+        }
+        res.add(rows);
+        return;
+    }
+    for(int c=0;c<n;c++){
+        int dg1=row-c+n-1;
+        int dg2=row+c;
+        if(col[c] || d1[dg1] || d2[dg2]) continue;
+
+        brd[row][c] = 'Q';                                    // place queen.             
+        col[c] = d1[dg1] = d2[dg2] = true;
+        dfs(brd, row + 1);
+
+        brd[row][c] = '.';                                      // backtrack.
+            col[c] = d1[dg1] = d2[dg2] = false;
+    }
+    } 
+}
+Time-O(N!)
+Space-O(N^2).
+
+
+3)  // Combinations-Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].
+
+class Solution {
+    List<List<Integer>> ans=new ArrayList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        backtrack(1,n,k,new ArrayList<>());
+        return ans;
+    }
+    public void backtrack(int start,int n,int k,List<Integer> path){                    // backtrack(start,path)
+        if(path.size()==k){                                                         //  if condition met.
+            ans.add(new ArrayList<>(path));                                          //  add path to result.
+            return;                                                                  // return back.
+        }
+        for(int i=start;i<=n-(k-path.size())+1;i++){
+            path.add(i);                                                      // choose i.
+            backtrack(i+1,n,k,path);                                           // backtrack(i+1)->we dont want repeated values.
+            path.remove(path.size()-1);                                       // undo choice.
+        }
+    }
+}
+Time-O(c(n,k))
+Space-O(k)
+
+
+4)  // Combination Sum.
+
+BRUTEFORCE APPROACH-
+class Solution {
+    List<List<Integer>> ans=new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        backt(candidates,target,0,new ArrayList<>());
+        return ans;
+    }
+    public void backt(int[] candidates,int target,int start,List<Integer> path){
+        if(target==0){
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+        if(target<0){
+            return;
+        }
+        for(int i=start;i<candidates.length;i++){
+            path.add(candidates[i]);
+            backt(candidates,target-candidates[i],i,path);
+            path.remove(path.size()-1);
+        }
+    }
+}
+Time-O(2^(target/minCand.))
+Space-O(target/minCand)
+
+OPTIMIZED CODE-
+class Solution {
+    List<List<Integer>> ans=new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);                                                //sorting for optimization.
+        backt(candidates,target,0,new ArrayList<>());
+        return ans;
+    }
+    public void backt(int[] candidates,int target,int start,List<Integer> path){
+        if(target==0){
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+        
+        for(int i=start;i<candidates.length;i++){
+            if(candidates[i]>target) break;                                            // big numbers are pruned.
+            path.add(candidates[i]);                                                 //choose i.
+            backt(candidates,target-candidates[i],i,path);                           //backtrack with i because we can reuse numbers.
+            path.remove(path.size()-1);                                         //undo choice.
+        }
+    }
+}
+Much fewer branches are explored because:
+Large numbers are cut early
+Tree is significantly pruned
+
+
+5)  // Combination Sum-2.
+
+class Solution {
+    List<List<Integer>> ans=new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+       Arrays.sort(candidates);                                                      //sorting for optimiz.
+        backt(0,candidates,target,new ArrayList<>());
+        return ans;
+    }
+    public void backt(int start,int[] cand,int target,List<Integer> path){
+        if(target==0){
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+        for(int i=start;i<cand.length;i++){
+            if(i>start && cand[i]==cand[i-1]) continue;                                      //extra rule for skipping the duplicate values in the arrays.
+         if(cand[i]>target) break;                                                       //pruning the large numbers.
+         path.add(cand[i]);
+         backt(i+1,cand,target-cand[i],path);
+         path.remove(path.size()-1);
+        }
+    }
+}
+Time-Worst case-O(2^n)
+Sapce-O(n)
+
+
+6)  // Generate Parenthesis.
+
