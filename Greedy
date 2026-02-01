@@ -1,1 +1,128 @@
+1)  // Assign Cookies.
 
+class Solution {
+    public int findContentChildren(int[] g, int[] s) {
+        Arrays.sort(g);
+        Arrays.sort(s);
+        int c=0;                            
+        int i=0;                                                  //two pointers.
+        int j=0;
+        while(i<g.length && j<s.length){                                        //maximize count-> no. of satisfied children;
+            if(s[j]>=g[i]){                                       //cookie satisfies child then increment count.
+             c++;
+             i++;                      //move to next child.
+             j++;                       //move to next cookie.
+            }else{
+                j++;                                           //if cookie too small, discard it.
+            }
+        } 
+        return c;
+    }
+}
+Time- O(nlogn + mlogm)
+Space-O(1).
+
+
+2)  // Array Partition. ->maximize sum.
+
+class Solution {
+    public int arrayPairSum(int[] nums) {                        
+        Arrays.sort(nums);                               //When only the minimum of a pair matters, pair numbers as close as possible.
+        int s=0;
+        for(int i=0;i<nums.length;i+=2){
+         s+=nums[i];                               //only keep adding the even indices number as they are the min. that gives max. sum.
+        }
+        return s;
+    }
+}
+Time-O(n log n)
+Space-O(log n)-> sorting stack.
+
+
+3)  // Can Place Flower.
+
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        if(n==0) return true;
+        for(int i=0;i<flowerbed.length;i++){
+            if(flowerbed[i]==0){
+                int prev=(i==0)?0:flowerbed[i-1];                         //assign prev value for index 0 as well.
+                int next=(i==flowerbed.length-1)?0:flowerbed[i+1];            //assign next value for last index as well. 
+                if(prev==0 && next==0){
+                    flowerbed[i]=1;
+                    n--;
+                    if(n==0) return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+Time-O(n)
+Space-O(1) in place.
+
+
+4)  // Lemonade Change.
+
+class Solution {
+    public boolean lemonadeChange(int[] bills) {
+        int fv=0;                                          // we need only five and ten rupee for change not 20.
+        int ten=0;
+        for(int bill:bills){
+            if(bill==5){                                                   // if bill is 5 then we just accept it.
+                fv++;
+            }else if(bill==10){                            
+                if(fv==0) return false;                             // if bill is 10 but we dont have 5 then return false.
+                fv--;                                            // if we have a 5 then we decrement its count but increment the 10 count.
+                ten++;
+            }else{                                              // if we get a 20 bill.
+                if(ten>0 && fv>0){                            //here we have 2 options , either we can give one 10 and one 5 rupee.
+                    ten--;
+                    fv--;
+                }else if(fv>=3){                                     // another option is we can give three 5 rupees, and decrement its count. 
+                    fv=fv-3;
+                }else{
+                    return false;                             // if any other option left then return false. otherwise true.
+                }
+            }
+        }
+        return true;
+    }
+}
+Time-O(n)
+Space-O(1)
+
+
+5)  // Activity Selection.
+
+class Solution {
+    public int activitySelection(int[] start, int[] finish) {
+
+        int n = start.length;
+        int[][] arr = new int[n][2];                                  // Create array of activities.
+        for (int i = 0; i < n; i++) {
+            arr[i][0] = start[i];
+            arr[i][1] = finish[i];
+        }                                                       
+        Arrays.sort(arr, new Comparator<int[]>() {                   // Sort by finish time
+            public int compare(int[] a, int[] b) {
+                return a[1] - b[1];
+            }
+        });
+        int count = 1;
+        int lastFinish = arr[0][1];
+        for (int i = 1; i < n; i++) {
+            if (arr[i][0] > lastFinish) {                       
+              count++;
+                lastFinish = arr[i][1];
+            }
+        }
+
+        return count;
+    }
+}
+Time-O(n log n)
+Space-O(n)
+
+
+6)  // Minimum Platform.
