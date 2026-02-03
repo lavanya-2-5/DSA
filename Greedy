@@ -126,3 +126,119 @@ Space-O(n)
 
 
 6)  // Minimum Platform.
+
+class Solution {
+    public int minPlatform(int arr[], int dep[]) {
+        Arrays.sort(arr);
+        Arrays.sort(dep);
+        int maxpl=0;
+        int platform=0;
+        int i=0;
+        int j=0;
+        int n=arr.length;
+        while(i<n && j<n){
+            if(arr[i]<=dep[j]){
+                platform++;                                   //how many trains arrive before one departs->that many platforms needed.
+                i++;
+            }else{
+                platform--;                                  //if the train departs then platform--.
+                j++;
+            }
+            maxpl=Math.max(maxpl,platform);
+        }
+        return maxpl;
+    }
+}
+Time-O(n log n)
+Space-O(1)
+
+
+7)  // Coin Change.
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp=new int[amount+1];
+        Arrays.fill(dp,amount+1);
+         dp[0]=0;
+        for(int i=1;i<=amount;i++){
+            for(int coin:coins){
+                if(i-coin>=0){
+             dp[i]=Math.min(dp[i],1+dp[i-coin]);         //dp approach(bottom up)
+                }
+            }
+        }
+        if(dp[amount]>amount){
+            return -1;
+        }else{
+            return dp[amount];                        //Use one coin now + best way to make the remaining amount.
+        }
+    }
+}
+Time-O(amt*no. of coins)
+Space-O(amt)
+
+
+8)  // Max. chunks to make sorted.     -> If max(arr[0..i]) == i → CUT NOW
+
+class Solution {
+    public int maxChunksToSorted(int[] arr) {
+        int max=0;
+        int chunks=0;
+        for(int i=0;i<arr.length;i++){
+            max=Math.max(max,arr[i]);
+            if(max==i){                                    //we can cut the chunk at that index only if all the values upto index i lies within that index i.
+                chunks++;
+            }
+        }
+        return chunks;
+    }
+}
+Time-O(N)
+Space-O(1)
+
+
+9)  // Max chunks to make sorted 2.
+
+class Solution {
+    public int maxChunksToSorted(int[] arr) {
+        int n=arr.length;
+        int[] lm=new int[n];
+        int[] rm=new int[n];
+        lm[0]=arr[0];
+        for(int i=1;i<n;i++){
+            lm[i]=Math.max(arr[i],lm[i-1]);               //max. on the left side after breaking on every index.
+        }
+        rm[n-1]=arr[n-1];
+        for(int i=n-2;i>=0;i--){
+            rm[i]=Math.min(arr[i],rm[i+1]);                //min. on the right side after breaking on every index.
+        }
+        int chunks=1;
+       for(int i=0;i<n-1;i++){
+        if(lm[i]<=rm[i+1]){                      //max. on the left must be less than or equal to the min. on the rigth after splitting then it will be sorted.
+            chunks++;
+        }
+       }
+       return chunks;
+    }
+}
+Time-O(n)
+Space-(n)
+
+
+10)  // 0-1 Knapsack.
+
+class Solution {
+    public int knapsack(int W, int val[], int wt[]) {
+        int n=val.length;
+        int[] dp=new int[W+1];
+        for(int i=0;i<n;i++){
+            for(int w=W;w>=wt[i];w--){
+                dp[w]=Math.max(dp[w],val[i]+dp[w-wt[i]]);
+            }
+        }
+        return dp[W];
+    }
+}
+dp[w] always stores the best value achievable for capacity w using items seen so far, and backward looping ensures each item is counted at most once.
+Time-O(n*w).
+Space-O(w).
