@@ -97,4 +97,252 @@ class Solution {
 }
 
 
-4)  // 
+4)  // Count the number of componenets in an undirected graph.
+
+We can solve it using DFS, BFS, or Union-Find. DFS/BFS both run in O(n+e). Union-Find is more optimized for repeated connectivity queries.
+Union-Find groups nodes into disjoint sets and counts how many independent groups remain.
+
+DSU(UNION FIND)-
+class Solution {
+    int[] parent;
+    public int countComponents(int n, int[][] edges) {
+  parent=new int[n];
+ int comp=n;
+ for(int i=0;i<n;i++){
+    parent[i]=i;
+ }
+ for(int[] e:edges){
+    int u=e[0];
+    int v=e[1];
+    if(union(u,v)){
+        comp--;
+    }
+ }
+ return comp;
+    }
+    public boolean union(int u,int v){
+        int x=find(u);
+        int y=find(v);
+        if(x==y) return false;
+        parent[x]=y;
+        return true;
+    }
+    public int find(int a){
+        if(parent[a]!=a){
+         parent[a]=find(parent[a]);
+        }
+        return parent[a];
+    }
+}  
+
+Time complexity: O(n+e⋅α(n))
+Space complexity: O(n)
+\alpha is the inverse Ackermann function.
+
+DFS APPROACH-
+class Solution {
+    public int countComponents(int n, int[][] edges) {
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();                   // Step 1: Build adjacency list
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            adj.get(u).add(v);
+            adj.get(v).add(u);
+        }
+        boolean[] visited = new boolean[n];                                     // Step 2: Visited array
+        int components = 0;
+        for (int i = 0; i < n; i++) {                                        // Step 3: DFS for each component
+            if (!visited[i]) {
+                components++;
+                dfs(i, adj, visited);
+            }
+        }   
+        return components;
+    }
+    private void dfs(int node, ArrayList<ArrayList<Integer>> adj, boolean[] visited) {
+        visited[node] = true;
+        for (int neigh : adj.get(node)) {
+            if (!visited[neigh]) {
+                dfs(neigh, adj, visited);
+            }
+        }
+    }
+}
+
+
+5)  // Directed graph cycle.
+
+If during DFS, you reach a node that is already in the recursion stack → CYCLE FOUND.
+class Solution {
+    public boolean isCyclic(int V, int[][] edges) {
+        ArrayList<ArrayList<Integer>> res=new ArrayList<>();
+        for(int i=0;i<V;i++){
+            res.add(new ArrayList<>());
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            res.get(u).add(v);
+        }                                                               // created an adjacency list.
+        boolean[] vis=new boolean[V];                                   // visited array.
+        boolean[] pathvs=new boolean[V];                                   // array to check if the node is repeated then is it on the current path.
+        for(int i=0;i<V;i++){
+            if(!vis[i]){
+                if(helper(i,vis,pathvs,res)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean helper(int node,boolean[] vis,boolean[] pathvs,
+    ArrayList<ArrayList<Integer>> res){
+        vis[node]=true;
+        pathvs[node]=true;
+        for(int neighbour:res.get(node)){
+            if(!vis[neighbour]){
+                if(helper(neighbour,vis,pathvs,res)){ 
+                    return true;                 
+                }
+            }
+            else if(pathvs[neighbour]){
+                return true;                                                  //cycle found.
+            }
+        }
+        pathvs[node]=false;                                                       //backtrack for unmarking the nodes from the current path.
+        return false;
+    }
+}
+Time-O(v+e)
+Space-O(v+e)
+
+Also be done using kahns algorithm (topological sort) for cycle detection ->if all nodes not processed then a cycle exist.
+class Solution {
+    public boolean isCyclic(int V, int[][] edges) {
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();                               // Step 1: Build adjacency list
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+        int[] indegree = new int[V];                                                       // Step 2: Compute indegree of each node
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];   // u -> v
+            adj.get(u).add(v);
+            indegree[v]++;
+        }
+        Queue<Integer> q = new LinkedList<>();                                       // Step 3: Add nodes with indegree 0 to queue
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0) {
+                q.add(i);
+            }
+        }
+        int count = 0;                                                          // Step 4: BFS (Topological Sort)
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            count++;
+            for (int neigh : adj.get(node)) {
+                indegree[neigh]--;
+                if (indegree[neigh] == 0) {
+                    q.add(neigh);
+                } 
+            }
+        }                                                                       // Step 5: Check if all nodes were processed
+        return count != V;                                                    // true => cycle exists                               
+    }
+}
+
+
+6)  // Find if path exist in graph.
+
+class Solution {
+    public boolean validPath(int n, int[][] edges, int source, int destination) {
+        ArrayList<ArrayList<Integer>> res=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            res.add(new ArrayList<>());
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            res.get(u).add(v);
+            res.get(v).add(u);                                                 //create an adjacency list.
+        }
+        Queue<Integer> q=new LinkedList<>();
+        boolean[] vis=new boolean[n];
+        q.add(source);
+        vis[source]=true;
+        while(!q.isEmpty()){
+            int node=q.poll();
+            if(node==destination) return true;
+            for(int neighbour:res.get(node)){                                 //check if you can travel from source to destination by using bfs approach.
+                if(!vis[neighbour]){
+                    vis[neighbour]=true;                                //if path exists.
+                    q.add(neighbour);
+                }
+            }
+        }
+     return false;                               //if path does not exists.
+    }
+}
+Time-O(n+edges)
+Space-O(n+edges)
+
+
+7)  // Print all paths from Source to Destination.
+
+class Solution {
+    List<List<Integer>> res=new ArrayList<>();
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        List<Integer> path=new ArrayList<>();
+        helperdfs(0,graph,path);                                              //calling helper along with backtracking.
+        return res;
+    }
+    public void helperdfs(int node,int[][] graph,List<Integer> path){
+        path.add(node);                                                        //add to the path.
+        if(node==graph.length-1){
+            res.add(new ArrayList<>(path));                                   // if dest. reaches save the path.
+            path.remove(path.size() - 1);
+            return;
+        }
+        for(int neighbour:graph[node]){                                             //explore neighbours.
+         helperdfs(neighbour,graph,path);
+        }
+        path.remove(path.size()-1);                                                    //remove last node.
+    } 
+}
+Time-O(exponenetial) ->O(2^n .n)
+Space-same.
+
+
+8)  // Number of islands.
+
+class Solution {
+    public int numIslands(char[][] grid) {
+        int row=grid.length;
+        int cols=grid[0].length;
+        int island=0;                                  //count of island.
+        for(int i=0;i<row;i++){
+            for(int j=0;j<cols;j++){
+                if(grid[i][j]=='1'){                   
+                    island++;
+                    helperdfs(grid,i,j);                      //to check upto how many cells is that one land scattered. 
+                }
+            }
+        }
+        return island;
+    }
+    public void helperdfs(char[][] grid,int i,int j){
+        if(i<0 || j<0 || i>=grid.length || j>=grid[0].length || grid[i][j]=='0'){
+            return ;
+        }
+        grid[i][j]='0';                                                             // marking the visited land.
+         helperdfs(grid,i+1,j);                                           //to check all 4 directions.
+         helperdfs(grid,i,j+1);
+         helperdfs(grid,i-1,j);
+         helperdfs(grid,i,j-1);
+    }
+}
+Time-O(rows*cols)
+Space-O(rows*cols)
