@@ -1,0 +1,73 @@
+1)  // MST Using PRIM'S Algorithm (calculating sum).
+
+class Solution {
+    public int spanningTree(int V, int[][] edges) {
+        List<List<int[]>> adj=new ArrayList<>();
+        for(int i=0;i<V;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            int wt=e[2];
+            adj.get(u).add(new int[]{v,wt});
+            adj.get(v).add(new int[]{u,wt});                             // creating adjacency list from list of edges->(u,v,wt).
+        }
+        boolean[] vis=new boolean[V];
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);             //using min-heap (sorted by min. weight).
+        pq.add(new int[]{0,0});                                                  //starting from node 0 by adding (0,0) the the pq.
+        int sum=0;
+        while(!pq.isEmpty()){
+            int[] curr=pq.poll();                                              //polling the min. weight node.
+            int wt=curr[0];
+            int node=curr[1];
+            if(vis[node]) continue;                                                // skip if node already visited.
+            vis[node]=true;                                                          //else mark visited.
+            sum+=wt;                                                                // calculate the sum.
+            for(int[] neighbour:adj.get(node)){                                   //add the neighbouring nodes to the pq if not visited.
+                int nodeval=neighbour[0];
+                int nodewt=neighbour[1];
+                if(!vis[nodeval]){
+                    pq.add(new int[]{nodewt,nodeval});
+                }
+            }
+        } 
+        return sum;                                                                     //return the min sum.
+    }
+}
+Time-O(E log V)
+Space-O(V+E)
+
+
+2)  // Min. Cost to connect all paths.
+
+class Solution {
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        boolean[] vis = new boolean[n]; 
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        pq.offer(new int[]{0, 0});                                                       //starting from node 0.
+        int res = 0;                                                                        //storing the sum.
+        int conn = 0;                                                                     // counting if all the nodes are connected or not.
+        while (conn < n) {
+            int[] curr = pq.poll();
+            int cost = curr[0];
+            int node = curr[1];
+            if (vis[node]) continue;                                               // if visited then skip.
+            vis[node] = true;
+            res += cost;
+            conn++;                                                                      //if visited then increment connected.
+            for (int i = 0; i < n; i++) {
+                if (!vis[i]) {   
+                    int minD = Math.abs(points[node][0] - points[i][0])                 //calculate manhattan distance and add all in the pq.
+                             + Math.abs(points[node][1] - points[i][1]);
+                    pq.offer(new int[]{minD, i});
+                }
+            }
+        }
+        return res;
+    }
+}
+
+Time-O(n^2 log n)
+Space-O(n^2)
