@@ -346,3 +346,95 @@ class Solution {
 }
 Time-O(rows*cols)
 Space-O(rows*cols)
+
+
+9)  // Number of Provinces.
+
+Provinces = Connected Components = DFS/BFS start.
+class Solution {
+    public int findCircleNum(int[][] isConnected) {
+     int provinces=0;
+     int n=isConnected.length;
+     boolean[] vis=new boolean[n];
+     for(int i=0;i<n;i++){
+        if(!vis[i]){
+            provinces++;
+            helperdfs(isConnected,vis,i);
+        }
+     }   
+     return provinces;
+    }
+    public void helperdfs(int[][] isConnected,boolean[] vis,int i){
+        vis[i]=true;
+        for(int j=0;j<isConnected.length;j++){
+            if(isConnected[i][j]==1 && !vis[j]){
+                helperdfs(isConnected,vis,j);
+            }
+        }
+    }
+}
+Time-O(n^2)
+Space-O(n)
+
+
+10)  // Flood Fill.
+
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        int oldcol=image[sr][sc];                                                             //store the original color to compare further.
+        if(oldcol!=color){
+            helperdfs(image,sr,sc,oldcol,color);
+        }
+        return image;
+    }
+    public void helperdfs(int[][] image,int sr,int sc,int oldcol,int color){
+       
+        if(sr<0 || sc<0 || sr>=image.length || sc>=image[0].length || image[sr][sc]!=oldcol){ return;
+        }
+         image[sr][sc]=color;
+         helperdfs(image,sr+1,sc,oldcol,color);
+         helperdfs(image,sr-1,sc,oldcol,color);
+         helperdfs(image,sr,sc+1,oldcol,color);
+         helperdfs(image,sr,sc-1,oldcol,color);
+    }
+}
+Time and Space-O(m*n).
+
+
+11)  // Number of Closed Island.
+
+Closed Island = Land component that survives boundary flooding.
+class Solution {
+    public int closedIsland(int[][] grid) {
+        int row=grid.length;
+        int cols=grid[0].length;
+        int closeIsland=0;
+      for(int i=0;i<row;i++){                                                    //We remove land connected to boundary.
+        if(grid[i][0]==0) helperdfs(grid,i,0);
+       if(grid[i][cols-1]==0) helperdfs(grid,i,cols-1);
+      }
+      for(int j=0;j<cols;j++){
+        if(grid[0][j]==0) helperdfs(grid,0,j);
+        if(grid[row-1][j]==0) helperdfs(grid,row-1,j);
+      }
+      for(int i=0;i<row;i++){
+        for(int j=0;j<cols;j++){
+            if(grid[i][j]==0){                                               //now normally count the closed island using dfs.
+                closeIsland++;
+                helperdfs(grid,i,j);
+            }
+        }
+      }
+      return closeIsland;
+    }
+    public void helperdfs(int[][] grid, int i,int j){
+        if(i<0 || j<0 || i>=grid.length || j>=grid[0].length || grid[i][j]==1){
+            return;
+        }
+        grid[i][j]=1;
+        helperdfs(grid,i+1,j);
+        helperdfs(grid,i,j+1);
+        helperdfs(grid,i-1,j);
+        helperdfs(grid,i,j-1);
+    }
+}
