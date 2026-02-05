@@ -71,3 +71,64 @@ class Solution {
 
 Time-O(n^2 log n)
 Space-O(n^2)
+
+
+3)   // Kruskal 
+
+import java.util.*;
+
+class Solution {
+
+    // Disjoint Set Parent Array
+    int[] parent;
+
+    // Find function
+    int find(int x) {
+        if (parent[x] == x)
+            return x;
+        return find(parent[x]);
+    }
+
+    // Union function
+    void union(int u, int v) {
+        int pu = find(u);
+        int pv = find(v);
+        parent[pu] = pv;
+    }
+
+    // Kruskal Algorithm
+    int kruskalMST(int V, int[][] edges) {
+
+        // Step 1: Initialize parent array
+        parent = new int[V];
+        for (int i = 0; i < V; i++) {
+            parent[i] = i;
+        }
+
+        // Step 2: Sort edges by weight
+        Arrays.sort(edges, (a, b) -> a[2] - b[2]);
+
+        int mstWeight = 0;
+        int count = 0;
+
+        // Step 3: Pick edges one by one
+        for (int[] e : edges) {
+            int u = e[0];
+            int v = e[1];
+            int wt = e[2];
+
+            // If no cycle, add edge
+            if (find(u) != find(v)) {
+                union(u, v);
+                mstWeight += wt;
+                count++;
+            }
+
+            // MST complete
+            if (count == V - 1)
+                break;
+        }
+
+        return mstWeight;
+    }
+}
