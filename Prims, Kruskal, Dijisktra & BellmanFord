@@ -1,0 +1,305 @@
+1)  // MST Using PRIM'S Algorithm (calculating sum).
+
+class Solution {
+    public int spanningTree(int V, int[][] edges) {
+        List<List<int[]>> adj=new ArrayList<>();
+        for(int i=0;i<V;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            int wt=e[2];
+            adj.get(u).add(new int[]{v,wt});
+            adj.get(v).add(new int[]{u,wt});                             // creating adjacency list from list of edges->(u,v,wt).
+        }
+        boolean[] vis=new boolean[V];
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);             //using min-heap (sorted by min. weight).
+        pq.add(new int[]{0,0});                                                  //starting from node 0 by adding (0,0) the the pq.
+        int sum=0;
+        while(!pq.isEmpty()){
+            int[] curr=pq.poll();                                              //polling the min. weight node.
+            int wt=curr[0];
+            int node=curr[1];
+            if(vis[node]) continue;                                                // skip if node already visited.
+            vis[node]=true;                                                          //else mark visited.
+            sum+=wt;                                                                // calculate the sum.
+            for(int[] neighbour:adj.get(node)){                                   //add the neighbouring nodes to the pq if not visited.
+                int nodeval=neighbour[0];
+                int nodewt=neighbour[1];
+                if(!vis[nodeval]){
+                    pq.add(new int[]{nodewt,nodeval});
+                }
+            }
+        } 
+        return sum;                                                                     //return the min sum.
+    }
+}
+Time-O(E log V)
+Space-O(V+E)
+
+
+2)  // Min. Cost to connect all paths.
+
+class Solution {
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        boolean[] vis = new boolean[n]; 
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        pq.offer(new int[]{0, 0});                                                       //starting from node 0.
+        int res = 0;                                                                        //storing the sum.
+        int conn = 0;                                                                     // counting if all the nodes are connected or not.
+        while (conn < n) {
+            int[] curr = pq.poll();
+            int cost = curr[0];
+            int node = curr[1];
+            if (vis[node]) continue;                                               // if visited then skip.
+            vis[node] = true;
+            res += cost;
+            conn++;                                                                      //if visited then increment connected.
+            for (int i = 0; i < n; i++) {
+                if (!vis[i]) {   
+                    int minD = Math.abs(points[node][0] - points[i][0])                 //calculate manhattan distance and add all in the pq.
+                             + Math.abs(points[node][1] - points[i][1]);
+                    pq.offer(new int[]{minD, i});
+                }
+            }
+        }
+        return res;
+    }
+}
+
+Time-O(n^2 log n)
+Space-O(n^2)
+
+
+3)   // Kruskal Algorithm.
+
+class Solution{
+  static int[] parent;
+  public static int KRUSKALMST(int[][] edges,int V){           
+    parent=new int[V];                                                // created a parent array.
+    for(int i=0;i<V;i++){
+      parent[i]=i;
+    }
+    Arrays.sort(edges,(a,b)->a[2]-b[2]);                                 // sort the edges by weight.
+    int rescost=0;                                                    // for calculating min cost.
+    int conn=0;                                                            // for keeping track of number of nodes connected.
+    for(int[] e:edges){
+      int u=e[0];                             
+      int v=e[1];
+      int wt=e[2];
+      if(find(u)!=find(v)){                                          // if parent same then perform union, add their weight and increment conected.
+        union(u,v);
+        rescost+=wt;
+        conn++;
+      }
+      if(conn==V-1){                                             // when all nodes connected by exactly 1 edge then break the loop. 
+        break;
+      }
+    }
+    return rescost;
+  }
+  public static int find(int x){                                     // find method.(disjoint set) -> DSU.
+    if(parent[x]!=x){
+      parent[x]=find(parent[x]);
+    }
+    return parent[x];
+  }
+  public static void union(int u,int v){                            // union method (disjoint set)
+    int pu=find(u);
+    int pv=find(v);
+   parent[pu]=pv;
+  }
+  public static void main(String[] args){
+ Scanner sc=new Scanner(System.in);
+ System.out.println("enter the vertices.");
+  int V=sc.nextInt();
+  System.out.println("enter the edges");
+  int E=sc.nextInt();
+  int[][] edges=new int[E][3];
+  System.out.println("enter the list");
+  for(int i=0;i<E;i++){
+  edges[i][0]=sc.nextInt();
+  edges[i][1]=sc.nextInt();
+  edges[i][2]=sc.nextInt();
+}
+  int ans=KRUSKALMST(edges,V);
+  System.out.println(ans);
+  }
+}
+Time-O(E log E)
+Space-O(E + V)
+
+
+4)  // Redundant Connection.
+
+If edges are added one by one and I must detect the first cycle -> DSU is the answer.
+class Solution {
+    int[] parent;
+    public int[] findRedundantConnection(int[][] edges) {
+        int n=edges.length;
+        parent=new int[n+1];
+        for(int i=1;i<=n;i++){                             //create a parent array.
+            parent[i]=i;
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            if(find(u)==find(v)){                               // if parent are same then cycle detected, return that edge.
+                return e;
+            }
+            union(u,v);                                    // if not same then connect the nodes with an edge.(union)
+        }
+      return new int[0];
+    }
+    public int find(int x){
+        if(parent[x]!=x){                                    
+            parent[x]=find(parent[x]);
+        }
+        return parent[x];
+    }
+    public void union(int u,int v){
+        int pu=find(u);
+        int pv=find(v);
+        parent[pu]=pv;
+    }
+}
+Time-O(n.a(n))
+Space-O(n)
+
+
+5)  // Number of operations to make network connected.
+
+I used DSU to group computers into connected components efficiently. if there are comp components, I need comp − 1 operations to connect them all into one network.
+class Solution {
+    int[] parent;
+    public int makeConnected(int n, int[][] connections) {
+        if(connections.length<n-1) return -1;
+        parent=new int[n];
+        for(int i=0;i<n;i++){
+            parent[i]=i;
+        }
+        int comp=0;
+        for(int[] e:connections){
+            int u=e[0];
+            int v=e[1];
+            if(find(u)!=find(v)){
+                union(u,v);
+            }
+        }
+        for(int i=0;i<n;i++){
+            if(find(i)==i){
+                comp++;
+            }
+        }
+        return comp-1;
+    }
+    public int find(int x){
+        if(parent[x]!=x){
+            parent[x]=find(parent[x]);
+        }
+        return parent[x];
+    }
+    public void union(int u, int v){
+        int px=find(u);
+        int py=find(v);
+        parent[px]=py;
+    }
+}
+Time-O(n+E) amortized
+Space-O(n)
+
+
+6)  // DIJIKSTRA.
+
+class Solution {
+    public int[] dijkstra(int V, int[][] edges, int src) {
+        List<List<int[]>> adj=new ArrayList<>();                          //  create an adjacency list.
+        for(int i=0;i<V;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int[] e:edges){
+            int u=e[0];
+            int v=e[1];
+            int d=e[2];
+            adj.get(u).add(new int[]{v,d});
+            adj.get(v).add(new int[]{u,d});                             // for an undirected graph.
+        }
+        
+        int[] dist=new int[V];
+        for(int i=0;i<V;i++){ 
+            dist[i]=Integer.MAX_VALUE;                                     // fill the 0th index with 0 and rest with infinity.
+        }
+        dist[src]=0;
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);                   // min heap(minimum distance.)
+        pq.offer(new int[]{0,src});
+        while(!pq.isEmpty()){
+            int[] cur=pq.poll();                                                        
+            int dis=cur[0];
+            int node=cur[1];                                                        //explore the dist. of all neighbours of this node.
+            if(dis>dist[node]) continue;
+            for(int[] neighbour:adj.get(node)){
+                int n=neighbour[0];                                                  // traversing the neighbours of the node to compare distances.
+                int wt=neighbour[1];
+                if(wt+dist[node]<dist[n]){                                // if new dist is min. then replace in dist[] and add in the pq.
+                    dist[n]=wt+dist[node];
+                    pq.add(new int[]{dist[n],n});
+                }
+            }
+        }
+        return dist;                                                       // return the final distance array.
+    }
+}
+Time-O(E log V)
+Space-O(V+E)
+
+
+7)  // Network Delay Time.
+
+class Solution {
+    public int networkDelayTime(int[][] times, int n, int k) {
+        List<List<int[]>> adj=new ArrayList<>();
+        for(int i=0;i<=n;i++){                                          // nodes starts from 1 not 0 so array size will be n+1. 
+            adj.add(new ArrayList<>());
+        }
+        for(int[] e:times){
+            int u=e[0];
+            int v=e[1];
+            int time=e[2];
+            adj.get(u).add(new int[]{v,time});
+        }
+        int[] dist=new int[n+1];
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        dist[k]=0;                                                             // filling arr[k]=0.
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);
+        pq.offer(new int[]{0,k});
+        while(!pq.isEmpty()){
+            int[] cur=pq.poll();
+            int t=cur[0];
+            int node=cur[1];
+            if(t>dist[node]) continue;
+            for(int[] neighbour:adj.get(node)){
+                int v=neighbour[0];
+                int oldt=neighbour[1];
+                if(oldt+dist[node]<dist[v]){                                    // checking if the new time is fast than the old time.
+                    dist[v]=oldt+dist[node];
+                    pq.add(new int[]{dist[v],v});
+                }
+            }
+            }
+            int ans=0;
+            for(int i=1;i<=n;i++){
+                if(dist[i]==Integer.MAX_VALUE){                                  // if any value is still infinity in the array then it is not reached means -1.
+                    return -1;
+                }
+                ans=Math.max(ans,dist[i]);
+            }
+            return ans;                                            // returning the maximum time from the array.
+    }
+}
+Time-O(E log v)
+Space-O(E+V)
+
+
+8)  // 
