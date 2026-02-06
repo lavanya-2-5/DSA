@@ -302,4 +302,161 @@ Time-O(E log v)
 Space-O(E+V)
 
 
-8)  // 
+8)  // Path with minimum effort.
+
+ALGO-
+1️⃣ Create an effort[][] array
+2️⃣ Initialize start cell-> 0.
+3️⃣ Use a Min-Heap (PriorityQueue) → Store {currentEffort, row, col}
+4️⃣ Pop from PQ & explore 4 directions → For each neighbor (nr, nc), calculate: newEffort = max(currentEffort, |height difference|).
+5️⃣ Relaxation step → If newEffort is smaller than effort[nr][nc], update it and push into PQ.
+6️⃣ Early stop → As soon as you reach (n−1, m−1), return the effort.
+
+class Solution {
+    public int minimumEffortPath(int[][] heights) {
+        int n=heights.length;
+        int m=heights[0].length;
+        int[][] effort=new int[n][m];
+        for(int[] row:effort){
+        Arrays.fill(row,Integer.MAX_VALUE);
+        }
+        effort[0][0]=0;
+        PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);
+        pq.offer(new int[]{0,0,0});
+        int[][] dir={{1,0},{-1,0},{0,1},{0,-1}};                               // neighbouring columns to check.
+        while(!pq.isEmpty()){
+            int[] cur=pq.poll();
+            int curEffort=cur[0];
+            int r=cur[1];
+            int c=cur[2];
+            if(r==n-1 && c==m-1){                                             // if last column reached then return the min. effort.
+                return curEffort; 
+            }
+            if(effort[r][c]<curEffort) continue;                          // if previous effort is already min. then skip.
+            for(int[] d:dir){
+                int nr=r+d[0];
+                int nc=c+d[1];
+                if(nr>=0 && nc>=0 && nr<n && nc<m){
+                    int diff=Math.abs(heights[r][c]-heights[nr][nc]);                   
+                    int newEff=Math.max(curEffort,diff);
+                    if(newEff<effort[nr][nc]){
+                        effort[nr][nc]=newEff;
+                        pq.offer(new int[]{newEff,nr,nc});
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+}
+Time-O(R*C LOG(R*C))
+Space-O(r*c)
+
+
+9)  // Minimum time to reach destination in connected graph.
+
+class Solution {
+    public int minTime(int n, int[][] edges) {
+       List<List<int[]>> adj=new ArrayList<>();
+       for(int i=0;i<n;i++){
+       adj.add(new ArrayList<>());
+       } 
+       for(int[] e:edges){
+        int u=e[0];
+        int v=e[1];
+        int st=e[2];
+        int et=e[3];
+        adj.get(u).add(new int[]{v,st,et});                                  // create an adjacency list.
+       }
+       PriorityQueue<int[]> pq=new PriorityQueue<>((a,b)->a[0]-b[0]);           // pq for time,node.
+       pq.offer(new int[] {0,0});
+       int[] dist=new int[n];
+       Arrays.fill(dist,Integer.MAX_VALUE);
+       dist[0]=0;
+       while(!pq.isEmpty()){
+        int[] cur=pq.poll();
+        int time=cur[0];
+        int node=cur[1];
+        if(node==n-1) return time;                              // if dest. node reached, return time.
+        if(time>dist[node]) continue;                                     // if time is not faster than before than skip.
+        for(int[] e:adj.get(node)){ 
+            int next=e[0];                                         //explore neighbour nodes.
+            int start=e[1];
+            int end=e[2];
+            int waitT=Math.max(time,start);                            // waiting time at a node.
+          if(waitT<=end){                                           // if time lies in the given range for a node.
+            int newT=waitT+1;                                                     // increment time by 1 when a node traversed.
+            if(newT<dist[next]){                                          // if new time less than the earlier time than replace.
+             dist[next]=newT;
+             pq.offer(new int[]{newT,next});
+            }
+          }
+        }
+       }
+       return -1;
+    }
+}
+Time-O((V+E) log V)
+Space-O(V + E)
+
+
+10)  // Bellman Ford.->(only works for directed edges).
+
+class Solution {
+    public int[] bellmanFord(int V, int[][] edges, int src) {
+    int[] dist=new int[V];
+    int inf=100000000;
+    Arrays.fill(dist,inf);
+    dist[src]=0;
+    for(int i=0;i<V-1;i++){                                             // doing relaxation for V-1 times .
+    for(int[] e:edges){
+        int u=e[0];
+        int v=e[1];
+        int wt=e[2];
+        if(dist[u]!=inf && dist[u]+wt<dist[v]){
+            dist[v]=dist[u]+wt;
+        }
+    }
+    }
+    for(int[] e:edges){                                          // checking for negative edge cycle by doing Vth iteration.
+        int u=e[0];
+        int v=e[1];
+        int wt=e[2];
+        if(dist[u]!=inf && dist[u]+wt<dist[v]){
+            return new int[]{-1};
+        }
+    }
+    return dist;
+    }
+}
+Time-O(V * E)
+Space-O(V)
+
+
+11)  // Cheapest flights with at most k stops.
+
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        int[] dist=new int[n];
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        dist[src]=0;
+        for(int i=0;i<=k;i++){                                                    // doing k+1 iterations.
+        int[] temp=dist.clone();                                             // use a temp. array for every iteration which is a clone of its previous iteration.
+        for(int[] f:flights){
+            int u=f[0];
+            int v=f[1];
+            int cost=f[2];
+            if(dist[u]!=Integer.MAX_VALUE && dist[u]+cost<temp[v]){
+                temp[v]=dist[u]+cost;
+            }
+        }
+        dist=temp;
+        }
+        if(dist[dst]==Integer.MAX_VALUE){
+            return -1;
+        }
+        return dist[dst];
+    }
+}
+Time-O(k*e)
+Space-O(n)
