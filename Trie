@@ -1,1 +1,163 @@
+1)  // Implementation of Trie.
 
+class Trie {
+ public static class TrieNode{
+    TrieNode[] children;
+    boolean isEnd;
+
+    TrieNode(){
+      children=new TrieNode[26];//a-z
+      isEnd=false;
+    }
+ }
+ public final TrieNode root;
+
+    public Trie() {
+        root=new TrieNode();
+    }
+    
+    public void insert(String word) {
+        TrieNode node=root;
+        for(char c:word.toCharArray()){
+            int indx=c-'a';
+            if(node.children[indx]==null){
+                node.children[indx]=new TrieNode();
+            }
+            node=node.children[indx];
+        }
+        node.isEnd=true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode node=root;
+        for(char c:word.toCharArray()){
+            int indx=c-'a';
+            if(node.children[indx]==null){
+                return false;
+            }
+            node=node.children[indx];
+        }
+        return node.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+     TrieNode node=root;
+     for(char c:prefix.toCharArray()){
+        int indx=c-'a';
+        if(node.children[indx]==null){
+            return false;
+        }
+        node=node.children[indx];
+     }
+     return true;
+    }
+}
+Time-O(L)
+Space-O(N*L)
+
+
+2)  // Delete words in trie.
+
+Unmark the word, then remove nodes only if no other word depends on them.
+
+public boolean delete(String word) {
+    return deleteHelper(root, word, 0);
+}
+private boolean deleteHelper(TrieNode node, String word, int depth) {
+    if (node == null) return false;
+    if (depth == word.length()) {                                                    // 1️⃣ If we reached end of the word.
+        if (!node.isEnd) return false;                                       // Word not present.
+        node.isEnd = false;                                               // Unmark end of word.
+        return isEmpty(node);                                              // If node has no children, tell parent it can delete this node.
+    }
+    int index = word.charAt(depth) - 'a';
+    TrieNode child = node.children[index];
+    if (child == null) return false;
+    boolean shouldDeleteChild = deleteHelper(child, word, depth + 1);               // 2️⃣ If child can be deleted.
+    if (shouldDeleteChild) {
+        node.children[index] = null;
+        return !node.isEnd && isEmpty(node);                                       // Return true if current node also became useless.
+    }
+    return false;
+}
+private boolean isEmpty(TrieNode node) {                                             // helper to check if node has any children.
+    for (TrieNode child : node.children) {
+        if (child != null) return false;
+    }
+    return true;
+}
+
+
+3)  // Count the number of words in trie.
+
+RECURSIVE APPROACH-
+  static int wordCount(TrieNode root)
+    {
+        int result = 0;  
+        if (root.isLeaf)                                              // Leaf denotes end of a word.
+            result++;
+        for (int i = 0; i < ALPHABET_SIZE; i++)    
+          if (root.children[i] != null )
+             result += wordCount(root.children[i]);
+        return result;   
+    }
+Time-O(N*K)
+Space-O(N*K)
+
+ITERATIVE APPROACH-
+public int countWords() {
+    int count = 0;
+    Stack<TrieNode> stack = new Stack<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        TrieNode node = stack.pop();                                        // If this node marks end of a word.
+        if (node.isEnd) {
+            count++;
+        }
+        for (int i = 0; i < 26; i++) {                            // Push all existing children.
+            if (node.children[i] != null) {
+                stack.push(node.children[i]);
+            }
+        }
+    }
+    return count;                                              
+}
+Time,Space-O(T)-> no. of nodes in trie.
+
+
+4)  // Word break.
+
+public class Solution {
+    public static boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true; 
+        for (int i = 1; i <= s.length(); i++){
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+}
+Time-O(n^2)
+Space-O(n)
+
+Trie + dp :-
+for (int i = 0; i < n; i++) {
+    if (!dp[i]) continue;
+    TrieNode node = root;
+    for (int j = i; j < n; j++) {
+        int idx = s.charAt(j) - 'a';
+        if (node.children[idx] == null) break;
+        node = node.children[idx];
+        if (node.isEnd) {
+            dp[j + 1] = true;
+        }
+    }
+}
+Time-O(n*l) , n = length of string, L = max word length
+Space-O(trie nodes+n)
