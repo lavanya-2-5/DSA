@@ -1,1 +1,90 @@
+1)  // Climbing Stairs.
 
+int climb(int n) {
+    if (n <= 1) return 1;                   // base case.
+    int[] dp = new int[n + 1];
+    dp[0] = 1;                                   // bottom up(tabulation).
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2];                 // using already computed values.
+    }
+    return dp[n];
+}
+
+Space OPTIMIZED WAY-
+int climb(int n) {
+    if (n <= 1) return 1;
+    int prev2 = 1;                          // no array used for storing.
+    int prev1 = 1;
+    for (int i = 2; i <= n; i++) {
+        int curr = prev1 + prev2;            // calculating on the fly.
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return prev1;
+}
+
+
+2)  // Min cost climbing stairs.
+
+class Solution {
+    public int minCostClimbingStairs(int[] cost) {
+        int n=cost.length;
+        int[] dp=new int[n+1];
+        dp[n]=0;
+        dp[n-1]=cost[n-1];
+        for(int i=n-2;i>=0;i--){
+           dp[i]=cost[i]+Math.min(dp[i+1],dp[i+2]);
+        }
+        return Math.min(dp[0],dp[1]);
+    }
+}
+
+
+3)  // Counting bits upto n.
+
+class Solution {
+    public int[] countBits(int n) {
+         int[] dp = new int[n + 1];
+    for (int i=1; i<=n; i++){
+        dp[i] = dp[i >> 1] + (i & 1);                 // take right shift and then add i%2.
+      }
+    return dp;
+    }
+}
+
+ANOTHER APPROACH- 
+class Solution {
+    public int[] countBits(int n) {
+        int[] dp=new int[n+1];
+        dp[0]=0;
+        for(int i=1;i<=n;i++){
+            dp[i]=dp[i&(i-1)]+1;                    // i&(i-1) removes the rightmost 1, so we count one bit + what remains.
+        }
+        return dp;
+    }
+}
+
+
+4)  // Perfect Square.
+
+class Solution {
+    public int numSquares(int n) {
+        int[] dp=new int[n+1];
+        for(int i=1;i<=n;i++){
+            dp[i]=i;
+        }
+        dp[0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j*j<=i;j++){
+                dp[i]=Math.min(dp[i],dp[i-j*j]+1);
+            }
+        }
+        return dp[n];
+    }
+}
+Time-O(nrootn)
+Space-O(n)
+
+
+5)  // House Robber.
