@@ -89,7 +89,7 @@ class Solution{
       int u=e[0];                             
       int v=e[1];
       int wt=e[2];
-      if(find(u)!=find(v)){                                          // if parent same then perform union, add their weight and increment conected.
+      if(find(u)!=find(v)){                                          // if parent not same then perform union, add their weight and increment conected.
         union(u,v);
         rescost+=wt;
         conn++;
