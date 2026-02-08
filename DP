@@ -88,3 +88,212 @@ Space-O(n)
 
 
 5)  // House Robber.
+
+At each step, ask if can rob or not rob.
+class Solution {
+    public int rob(int[] nums) {
+        int n=nums.length;
+        if(n==1) return nums[0];
+        int[] dp=new int[n];
+        dp[0]=nums[0];
+        dp[1]=Math.max(nums[1],nums[0]);
+        for(int i=2;i<n;i++){
+            dp[i]=Math.max(dp[i-1],dp[i-2]+nums[i]);          // pick vs not pick.
+        }
+        return dp[n-1];
+    }
+} 
+
+SPACE OPTIMIZED APPROACH-
+class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        if (n == 1) return nums[0];
+        int prev2 = nums[0];                                           // dp[0]
+        int prev1 = Math.max(nums[0], nums[1]);                             // dp[1]
+        for (int i = 2; i < n; i++) {
+            int curr = Math.max(prev1, prev2 + nums[i]);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return prev1;
+    }
+}
+
+
+6)  // House Robber 2.
+
+class Solution {
+    public int rob(int[] nums) {
+        int n=nums.length;
+        if(n==1) return nums[0];
+        return Math.max(HDP(nums,0,n-2),HDP(nums,1,n-1));                         //  Case 1: houses 0 to n-2. & Case 2: houses 1 to n-1.
+    }
+    public int HDP(int[] nums,int st,int e){
+      int prev1=0;                                                         // space optimization.
+      int prev2=0;
+      for(int i=st;i<=e;i++){
+        int curr=Math.max(prev1,prev2+nums[i]);
+        prev2=prev1;
+        prev1=curr;
+      }
+      return prev1;
+    }
+}
+
+Another Approach-
+class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        if (n == 1) return nums[0];
+        int[] dp1 = new int[n];
+        int[] dp2 = new int[n];
+        dp1[0] = nums[0];                                                  // Case 1: houses 0 to n-2.
+        dp1[1] = Math.max(nums[0], nums[1]);
+        for (int i = 2; i <= n - 2; i++) {
+            dp1[i] = Math.max(dp1[i-1], dp1[i-2] + nums[i]);
+        }
+        dp2[1] = nums[1];                                                          // Case 2: houses 1 to n-1.
+        dp2[2] = Math.max(nums[1], nums[2]);
+        for (int i = 3; i <= n - 1; i++) {
+            dp2[i] = Math.max(dp2[i-1], dp2[i-2] + nums[i]);
+        }
+
+        return Math.max(dp1[n-2], dp2[n-1]);
+    }
+}
+
+
+7)  // Gold Mine .
+
+class Solution {
+    public int maxGold(int[][] mat) {
+        int n=mat.length;
+        int m=mat[0].length;
+        int[][] dpgrid=new int[n][m];                                       // making a 2d grid.
+        for(int i=0;i<n;i++){
+            dpgrid[i][m-1]=mat[i][m-1];
+        }
+       for(int j=m-2;j>=0;j--){
+            for(int i=0;i<n;i++){
+                int right=dpgrid[i][j+1];                                         // creating 3 directions.
+                int rightUp=(i>0)?dpgrid[i-1][j+1]:0;
+                int rightDown=(i<n-1)?dpgrid[i+1][j+1]:0;
+                dpgrid[i][j]=mat[i][j]+Math.max(right,Math.max(rightUp,rightDown));                   // putting values in the dp grid.
+            }
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            ans=Math.max(ans,dpgrid[i][0]);                           // finding max. value in the 1st column.
+        }
+        return ans;
+    }
+}
+Time-O(N*M)
+Space-O(N*M)
+
+Space Optimized Approach-
+class Solution {
+    public int maxGold(int[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
+        int[] next = new int[n];                                    // creating next array that will always store the next column values.                                    
+        for (int i = 0; i < n; i++) {                                                  // Base case: last column.
+            next[i] = mat[i][m - 1];
+        }
+        for (int j = m - 2; j >= 0; j--) {                                        // Move from second last column to first.
+            int[] curr = new int[n];                                                 // always store the current column values.
+            for (int i = 0; i < n; i++) {
+                int right = next[i];
+                int rightUp = (i > 0) ? next[i - 1] : 0;
+                int rightDown = (i < n - 1) ? next[i + 1] : 0;
+                curr[i] = mat[i][j] + Math.max(right, Math.max(rightUp, rightDown));
+            }
+            next = curr;                                                                // for the next iteration, shift values from curr to next.
+        }
+        int ans = 0;                                                               // Answer = max in first column.
+        for (int val : next) {
+            ans = Math.max(ans, val);
+        }
+        return ans;
+    }
+}
+Time-O(N*M)
+Space-O(N)
+
+
+8)  // Path with Maximum Gold.
+
+class Solution {
+     int[][] dir = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    public int getMaximumGold(int[][] grid) {
+         int n=grid.length;
+        int m=grid[0].length;
+        int maxgold=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]>0){
+                maxgold=Math.max(maxgold,dfshelper(grid,i,j));
+                }
+            }
+        }
+        return maxgold;
+    }
+  public int dfshelper(int[][] grid,int i,int j){
+     int n=grid.length;
+        int m=grid[0].length;
+     int gold=grid[i][j];
+      grid[i][j]=0;
+      int mg=0;
+      for(int[] d:dir){
+      int nr=i+d[0];
+      int nc=j+d[1];
+      if(nr>=0 && nc>=0 && nr<n && nc<m && grid[nr][nc]>0){
+        mg=Math.max(mg,dfshelper(grid,nr,nc));
+      }
+      }
+      grid[i][j]=gold;
+      return gold+mg;
+  }
+}
+
+Another Approach-
+class Solution {
+    int n, m;
+    int[][] grid;
+    public int getMaximumGold(int[][] grid) {
+        this.grid = grid;
+        n = grid.length;
+        m = grid[0].length;
+        int maxGold = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] > 0) {                                                   // Try starting DFS from every cell except the cell having 0. 
+                    maxGold = Math.max(maxGold, dfs(i, j));
+                }
+            }
+        }
+        return maxGold;
+    }
+    private int dfs(int i, int j){
+        if (i < 0 || i >= n || j < 0 || j >= m || grid[i][j] == 0) {               // base condition for boundary.
+            return 0;
+        }
+        int gold = grid[i][j];
+        grid[i][j] = 0;                                                          // mark visited.
+        int up    = dfs(i - 1, j);
+        int down  = dfs(i + 1, j);
+        int left  = dfs(i, j - 1);
+        int right = dfs(i, j + 1);
+        grid[i][j] = gold;                                               // backtrack.
+        return gold + Math.max(
+                Math.max(up, down),
+                Math.max(left, right)
+        );
+    }
+}
+Time-O(4^(n*m))
+Space-O(n*m)
+
+
+9)  // Unique Paths.
