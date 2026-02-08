@@ -222,7 +222,7 @@ Time-O(N*M)
 Space-O(N)
 
 
-8)  // Path with Maximum Gold.
+8)  // Path with Maximum Gold.   (dfs + backtracking)
 
 class Solution {
      int[][] dir = {{1,0}, {-1,0}, {0,1}, {0,-1}};
@@ -297,3 +297,173 @@ Space-O(n*m)
 
 
 9)  // Unique Paths.
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[][] dp=new int[m][n];
+        for(int i=0;i<m;i++){
+            dp[i][0]=1;
+        }
+        for(int j=0;j<n;j++){
+            dp[0][j]=1;
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                dp[i][j]=dp[i][j-1]+dp[i-1][j];
+            }
+        }
+        return dp[m-1][n-1];
+    }
+}
+Time-O(m*n)
+Space-O(m*n)
+
+Space optimized approach-
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);                                      // using only 1 array and modifying values for m-1 iterations.
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[j] = dp[j] + dp[j-1];
+            }
+        }
+        return dp[n-1];
+    }
+}
+space-O(n)
+
+
+10)  // Unique Paths 2.
+
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m=obstacleGrid.length;
+        int n=obstacleGrid[0].length;
+        if(obstacleGrid[0][0]==1 || obstacleGrid[m-1][n-1]==1) return 0;              // id starting or ending is an obstacle then return 0.
+        int[][] dp=new int[m][n];
+        dp[0][0]=1;                                                               // else starting will be 1.
+        for(int i=1;i<m;i++){
+            if(obstacleGrid[i][0]==1){                                              // setting the 1st column to 1.
+                dp[i][0]=0;
+            }else{
+                dp[i][0]=dp[i-1][0];                                               // if not an obstacle then copy the previous value.
+            }
+        }
+        for(int j=1;j<n;j++){                                          // setting the first row to 1.
+            if(obstacleGrid[0][j]==1){
+                dp[0][j]=0;
+            }else{
+                dp[0][j]=dp[0][j-1];
+            }
+        }
+        for(int i=1;i<m;i++){                                               // starting from dp[1][1] and filling the values if not an obstacle.
+            for(int j=1;j<n;j++){
+                if(obstacleGrid[i][j]==1){
+                    dp[i][j]=0;
+                }else{
+                dp[i][j]=dp[i-1][j]+dp[i][j-1];
+            }}
+        }
+        return dp[m-1][n-1];
+    }
+}
+Time-O(n*m)
+Space-O(n*m)
+
+Space optimized approach-
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int[] dp = new int[n];
+        dp[0] = obstacleGrid[0][0] == 1 ? 0 : 1;                                // Starting cell.
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;                                                 // obstacle blocks paths.
+                } 
+                else if (j > 0) {
+                    dp[j] = dp[j] + dp[j - 1];
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+}
+Space-O(n)
+
+
+11)  // Minimum Path Sum.
+
+class Solution {
+    public int minPathSum(int[][] grid) {
+       int m=grid.length;
+       int n=grid[0].length;
+       int[][] dp=new int[m][n];
+       dp[0][0]=grid[0][0];
+       for(int i=1;i<m;i++){
+        dp[i][0]=grid[i][0]+dp[i-1][0];
+       } 
+       for(int j=1;j<n;j++){
+        dp[0][j]=grid[0][j]+dp[0][j-1];
+       }
+       for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            dp[i][j]=grid[i][j]+Math.min(dp[i][j-1],dp[i-1][j]);
+        }
+       }
+       return dp[m-1][n-1];
+    }
+}
+Time-O(m*n)
+Space-O(m*n)
+
+Space optimized approach-
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] dp = new int[n];
+        dp[0] = grid[0][0];                                                            // Initialize start.
+        for (int j = 1; j < n; j++) {                                                 // First row.
+            dp[j] = grid[0][j] + dp[j - 1];
+        }                                                                                 
+        for (int i = 1; i < m; i++) {                                               // Remaining rows.
+            dp[0] = grid[i][0] + dp[0];                                          // first column.
+            for (int j = 1; j < n; j++) {
+                dp[j] = grid[i][j] + Math.min(dp[j], dp[j - 1]);
+            }
+        }
+        return dp[n - 1];
+    }
+}
+Space-O(n)
+
+
+12)  // Target Sum.
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int tsum=0;
+        for(int num:nums){
+            tsum+=num;
+        }
+        if((tsum+target)%2!=0) return 0;                               // Left side is always even.
+        if(Math.abs(target)>tsum) return 0;
+        int P=(tsum+target)/2;                                       // 2 * sum(P) = target + totalSum.
+        int[] dp=new int[P+1];
+        dp[0]=1;
+        for(int num:nums){
+            for(int i=P;i>=num;i--){
+                dp[i]=dp[i]+dp[i-num];
+            }
+        }
+        return dp[P];
+    }
+}
+Time-O(n*p)
+Space-O(p)
+
+
+13)  // 
