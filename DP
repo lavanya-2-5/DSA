@@ -466,4 +466,86 @@ Time-O(n*p)
 Space-O(p)
 
 
-13)  // 
+13)  // Coin change.
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp=new int[amount+1];
+        Arrays.fill(dp,amount+1);
+         dp[0]=0;
+        for(int i=1;i<=amount;i++){
+            for(int coin:coins){
+                if(i-coin>=0){
+             dp[i]=Math.min(dp[i],1+dp[i-coin]);                       // Optimization (min/max) → use min/max, amount outer loop.
+                }
+            }
+        }
+        if(dp[amount]>amount){
+            return -1;
+        }else{
+            return dp[amount];
+        }
+    }
+}
+Time-O(amt* no. of coins)
+Space-O(amt)
+
+
+14)  // Coin change 2.
+
+class Solution {
+    public int change(int amount, int[] coins) {
+        int[] dp=new int[amount+1];
+        dp[0]=1;                                                   //dp[0] = 1 in counting problems.
+        for(int coin:coins){
+            for(int i=coin;i<amount+1;i++){
+                dp[i]=dp[i]+dp[i-coin];                            //Counting combinations → use +=, coin outer loop.
+            }
+        }
+        return dp[amount];
+    }
+}
+Time-O(amt* no. of coins)
+Space-O(amt)
+
+
+15)  // Jump Game. -> (greedy)
+
+class Solution {
+    public boolean canJump(int[] nums) {
+        int maxInd=0;
+        for(int i=0;i<nums.length;i++){
+            if(i>maxInd){
+                return false;
+            }
+            maxInd=Math.max(maxInd,i+nums[i]);
+        }
+        return true;
+    }
+Time-O(n)
+Space-O(1)
+
+
+16)  // Jump Game 2. -> (greedy)
+
+class Solution {
+    public int jump(int[] nums) {
+        int j=0;                                      // no. of jumps.
+        int rangeEnd=0;                                       // only counting when i==end of a range.
+        int far=0;                                    // counting min. number if jumps.
+        for(int i=0;i<nums.length-1;i++){
+            far=Math.max(far,i+nums[i]);
+            if(i==rangeEnd){
+                rangeEnd=far;
+                j++;
+            }
+        }
+        return j;
+    }
+}
+Time-O(N)
+Space-O(1)
+
+
+17)  // Longest Common Subsequence.
+
