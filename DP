@@ -549,3 +549,155 @@ Space-O(1)
 
 17)  // Longest Common Subsequence.
 
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+       int m=text1.length();
+       int n=text2.length();
+       int[][] dpGrid=new int[m+1][n+1];
+       for(int i=1;i<=m;i++){
+        for(int j=1;j<=n;j++){
+            if(text1.charAt(i-1)!=text2.charAt(j-1)){                                   // if last letter not same , then choose max of up or left value.
+                dpGrid[i][j]=Math.max(dpGrid[i-1][j],dpGrid[i][j-1]);
+            }
+            else{
+                dpGrid[i][j]=dpGrid[i-1][j-1]+1;                                       // if last letter matches, then copy the diagonal value and + 1 to it.
+            }
+        }
+       }
+      return dpGrid[m][n];
+    }
+}
+Time-O(n*m)
+Space-O(n*m)
+
+Space Optimized approach-
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int n = text1.length();
+        int m = text2.length();
+        int[] prev = new int[m + 1];
+        int[] curr = new int[m + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    curr[j] = 1 + prev[j - 1];
+                } else {
+                    curr[j] = Math.max(prev[j], curr[j - 1]);
+                }
+            }
+            int[] temp = prev;                                                  // move current row to previous.
+            prev = curr;
+            curr = temp;
+        }
+
+        return prev[m];
+    }
+}
+Space-O(n)
+
+
+18)  // Longest Palindromic Substring. ->(Greedy/Two Pointer)
+
+Every palindrome has a center and expands equally left & right.
+class Solution {
+    public String longestPalindrome(String s) {
+        int start=0,end=0;
+        for(int i=0;i<s.length();i++){
+            int len1=expand(s,i,i+1);
+            int len2=expand(s,i,i);
+            int len=Math.max(len1,len2);
+            if((end-start)<len){                                             // Center at i, Expand left by (len-1)/2, Expand right by len/2.
+                start=i-(len-1)/2;
+                end=i+len/2;
+            }
+        }
+        return s.substring(start,end+1);
+    }
+    public int expand(String s,int i,int j){
+        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){
+            i--;                                                         // keep expanding till boundary checks.
+            j++;
+        }
+        return j-i-1;                                                                // return the length of the current palindrome.
+    } 
+}
+Time-O(n^2)
+Space-O(1)
+
+More optimized approach is using Manachers algo.
+
+
+19)  // Longest Palindromic Subsequence. -> (DP)
+
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        int n=s.length();
+        String rev=new StringBuilder(s).reverse().toString();
+        int[][] dpgrid=new int[n+1][n+1];
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                if(s.charAt(i-1)==rev.charAt(j-1)){
+                    dpgrid[i][j]=dpgrid[i-1][j-1]+1;
+                }else{
+                    dpgrid[i][j]=Math.max(dpgrid[i][j-1],dpgrid[i-1][j]);
+                }
+            }
+        }
+        return dpgrid[n][n];
+    }
+}
+Time-O(N^2)
+Space-O(N^2)
+
+Space Optimized approach-
+class Solution {
+    public int longestPalindromeSubseq(String s) {
+        String t = new StringBuilder(s).reverse().toString();
+        int n = s.length();
+        int[] prev = new int[n + 1];
+        int[] curr = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    curr[j] = 1 + prev[j - 1];
+                } else {
+                    curr[j] = Math.max(prev[j], curr[j - 1]);
+                }
+            }
+            int[] temp = prev;                                          // move curr row to prev.
+            prev = curr;
+            curr = temp;
+        }
+        return prev[n];
+    }
+}
+Space-O(n)
+
+
+20)  // Palindromic Substrings. -> (Two-Pointer / Center-Expansion technique)
+
+class Solution {
+    int count=0;                                                      // maintain a global counter variable.
+    public int countSubstrings(String s) {
+        int st=0;
+        int end=0;
+        for(int i=0;i<s.length();i++){
+             expand(s,i,i);                                             // for odd length palindromes, center is 1.
+             expand(s,i,i+1);                                           // for even length palindromes, center is 2 letters.
+        }
+        return count;
+    }
+    public void expand(String s,int i,int j){
+        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){
+            i--;
+            j++;
+            count++;
+        }
+    }
+}
+Time-O(N^2)
+Space-O(1)
+
+
+21)  // WildCard Matching.
+
