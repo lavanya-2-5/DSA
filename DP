@@ -736,3 +736,57 @@ Space-O(n*m)
 
 22)  // Egg Dropping Problem.
 
+Case 1: Egg breaks -> You lose one egg. The critical floor is below it. -> Eggs left = k-1, Moves left = m-1, Floors you can test below = dp[k-1][m-1].
+Case 2: Egg does NOT break -> Eggs remain same. The critical floow is above it.-> Eggs left = k, Moves left = m-1, Floors you can test above = dp[k][m-1].
+class Solution {
+    public int superEggDrop(int k, int n) {
+        int[][] dp=new int[k+1][n+1];
+        int mvs=0;
+        while(dp[k][mvs]<n){
+            mvs++;
+            for(int eggs=1;eggs<=k;eggs++){
+                dp[eggs][mvs]=1+dp[eggs-1][mvs-1]+dp[eggs][mvs-1];              // current floor + before + after.
+            }
+        }
+        return mvs;
+    }
+}
+Time-O(k*moves)
+Space-O(k*moves)
+
+
+23)  // Regular Expression Matching Problem.
+
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int n=s.length();
+        int m=p.length();
+        boolean[][] dp=new boolean[n+1][m+1];
+        dp[0][0]=true;
+        for(int j=1;j<=m;j++){
+            if(p.charAt(j-1)=='*'){                                // in case the string is empty but pattern in non empty.
+                dp[0][j]=dp[0][j-2];
+            }
+        }
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+               if(p.charAt(j-1)=='*'){                                      // here * means zero or more of preceding element.
+                    dp[i][j]=dp[i][j-2];                                       // if i use it zero times then copy the j-2 value.
+                    char prev=p.charAt(j-2);
+                    if(prev=='.' || prev==s.charAt(i-1)){                   // so we check what is the preceding element.
+                       dp[i][j]= dp[i][j] || dp[i-1][j];
+                    }
+                }
+                else if(p.charAt(j-1)==s.charAt(i-1) || p.charAt(j-1)=='.'){
+                    dp[i][j]=dp[i-1][j-1];                                          // copies the diagonal value if the characters are same or there is a '.'
+            }
+        }
+    }
+        return dp[n][m];
+    }
+}
+Time-O(n*m)
+Space-O(n*m)
+NOTES-: one character consumed from string & one character consumed from pattern -> So we copy diagonal left (above) value.
+        string stays same & pattern jumps -> So we copy left / j-2  cell value.(we are using x* 0 times).
+        Pattern has * AND Current string character matches the character before * -> we take OR of the above cell value and itself.
