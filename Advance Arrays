@@ -141,9 +141,43 @@ class Solution {
 Whichever side is shorter decides how much water can be stored there.
 
 
+7)  // Coin Change.
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];                                         
+        for (int i = 0; i <= amount; i++) {                                   // Fill with a large number (means impossible initially).
+            dp[i] = amount + 1;
+        }
+        dp[0] = 0;                                                               // 0 coins needed to make amount 0.
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (i - coin >= 0) {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+}
 
 
+8)  // Coin Change 2.
 
+class Solution {
+    public int change(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; i++) {
+                dp[i] += dp[i - coin];
+            }
+        }
+        return dp[amount];
+    }
+}
+for coin 2 , we look back 2 steps in dp and add it into the current value, for coin 5 , we look back 5 steps in dp and add it in the current value.
+this is how for every coin we iterate the dp array starting from the coin till the end.
 
 
 
