@@ -3,9 +3,9 @@
 int climb(int n) {
     if (n <= 1) return 1;                   // base case.
     int[] dp = new int[n + 1];
-    dp[0] = 1;                                   // bottom up(tabulation).
-    dp[1] = 1;
-    for (int i = 2; i <= n; i++) {
+    dp[1] = 1;                                   // bottom up(tabulation).
+    dp[2] = 2;
+    for (int i = 3; i <= n; i++) {
         dp[i] = dp[i - 1] + dp[i - 2];                 // using already computed values.
     }
     return dp[n];
@@ -30,18 +30,44 @@ int climb(int n) {
 class Solution {
     public int minCostClimbingStairs(int[] cost) {
         int n=cost.length;
-        int[] dp=new int[n+1];
-        dp[n]=0;
-        dp[n-1]=cost[n-1];
-        for(int i=n-2;i>=0;i--){
-           dp[i]=cost[i]+Math.min(dp[i+1],dp[i+2]);
+        int[] dp=new int[n];
+        dp[0]=cost[0];
+        dp[1]=cost[1];
+        for(int i=2;i<n;i++){
+           dp[i]=cost[i]+Math.min(dp[i-1],dp[i-2]);
         }
-        return Math.min(dp[0],dp[1]);
+        return Math.min(dp[n-1],dp[n-2]);
     }
 }
 
 
-3)  // Counting bits upto n.
+3)  // Climbing Stairs 2.
+
+class Solution {
+    public int climbStairs(int n, int[] costs) {
+        int[] dp=new int[n+1];
+         dp[0]=0;
+        for(int i=1;i<=n;i++){
+            int minC=Integer.MAX_VALUE;
+            if(i-1>=0){
+              minC=Math.min(minC,dp[i-1]+1);
+            }
+            if(i-2>=0){
+              minC=Math.min(minC,dp[i-2]+4);
+            }
+            if(i-3>=0){
+              minC=Math.min(minC,dp[i-3]+9);
+            }
+           dp[i]=costs[i-1]+minC;
+        }
+        return dp[n];
+    }
+}
+Time-O(N)
+Space-O(N)
+
+
+4)  // Counting bits upto n.
 
 class Solution {
     public int[] countBits(int n) {
@@ -66,7 +92,7 @@ class Solution {
 }
 
 
-4)  // Perfect Square.
+5)  // Perfect Square.
 
 class Solution {
     public int numSquares(int n) {
@@ -87,7 +113,7 @@ Time-O(nrootn)
 Space-O(n)
 
 
-5)  // House Robber.
+6)  // House Robber.
 
 At each step, ask if can rob or not rob.
 class Solution {
@@ -121,7 +147,7 @@ class Solution {
 }
 
 
-6)  // House Robber 2.
+7)  // House Robber 2.
 
 class Solution {
     public int rob(int[] nums) {
@@ -144,27 +170,28 @@ class Solution {
 Another Approach-
 class Solution {
     public int rob(int[] nums) {
-        int n = nums.length;
-        if (n == 1) return nums[0];
-        int[] dp1 = new int[n];
-        int[] dp2 = new int[n];
-        dp1[0] = nums[0];                                                  // Case 1: houses 0 to n-2.
-        dp1[1] = Math.max(nums[0], nums[1]);
-        for (int i = 2; i <= n - 2; i++) {
-            dp1[i] = Math.max(dp1[i-1], dp1[i-2] + nums[i]);
+        int n=nums.length;
+        if(n==0) return 0;
+        if(n==1) return nums[0];
+        int case1=roblast(nums,0,n-2);
+        int case2=roblast(nums,1,n-1);
+        return Math.max(case1,case2);
+    }
+    public int roblast(int[] nums,int start,int end){
+        int len=end-start+1;                                                   // length of subarray.
+        int[] dp=new int[len];
+        dp[0]=nums[start];
+        if(len==1) return dp[0];
+        dp[1]=Math.max(nums[start],nums[start+1]);
+        for(int i=2;i<len;i++){
+            dp[i]=Math.max(dp[i-1],dp[i-2]+nums[start+i]);
         }
-        dp2[1] = nums[1];                                                          // Case 2: houses 1 to n-1.
-        dp2[2] = Math.max(nums[1], nums[2]);
-        for (int i = 3; i <= n - 1; i++) {
-            dp2[i] = Math.max(dp2[i-1], dp2[i-2] + nums[i]);
-        }
-
-        return Math.max(dp1[n-2], dp2[n-1]);
+     return dp[len-1];
     }
 }
 
 
-7)  // Gold Mine .
+8)  // Gold Mine .
 
 class Solution {
     public int maxGold(int[][] mat) {
@@ -222,7 +249,7 @@ Time-O(N*M)
 Space-O(N)
 
 
-8)  // Path with Maximum Gold.   (dfs + backtracking)
+9)  // Path with Maximum Gold.   (dfs + backtracking)
 
 class Solution {
      int[][] dir = {{1,0}, {-1,0}, {0,1}, {0,-1}};
@@ -296,7 +323,7 @@ Time-O(4^(n*m))
 Space-O(n*m)
 
 
-9)  // Unique Paths.
+10)  // Unique Paths.
 
 class Solution {
     public int uniquePaths(int m, int n) {
@@ -334,7 +361,7 @@ class Solution {
 space-O(n)
 
 
-10)  // Unique Paths 2.
+11)  // Unique Paths 2.
 
 class Solution {
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
@@ -394,7 +421,7 @@ class Solution {
 Space-O(n)
 
 
-11)  // Minimum Path Sum.
+12)  // Minimum Path Sum.
 
 class Solution {
     public int minPathSum(int[][] grid) {
@@ -441,7 +468,7 @@ class Solution {
 Space-O(n)
 
 
-12)  // Target Sum.
+13)  // Target Sum.
 
 class Solution {
     public int findTargetSumWays(int[] nums, int target) {
@@ -466,7 +493,7 @@ Time-O(n*p)
 Space-O(p)
 
 
-13)  // Coin change.
+14)  // Coin change.
 
 class Solution {
     public int coinChange(int[] coins, int amount) {
@@ -491,7 +518,7 @@ Time-O(amt* no. of coins)
 Space-O(amt)
 
 
-14)  // Coin change 2.
+15)  // Coin change 2.
 
 class Solution {
     public int change(int amount, int[] coins) {
@@ -509,7 +536,7 @@ Time-O(amt* no. of coins)
 Space-O(amt)
 
 
-15)  // Jump Game. -> (greedy)
+16)  // Jump Game. -> (greedy)
 
 class Solution {
     public boolean canJump(int[] nums) {
@@ -526,7 +553,7 @@ Time-O(n)
 Space-O(1)
 
 
-16)  // Jump Game 2. -> (greedy)
+17)  // Jump Game 2. -> (greedy)
 
 class Solution {
     public int jump(int[] nums) {
@@ -547,7 +574,7 @@ Time-O(N)
 Space-O(1)
 
 
-17)  // Longest Common Subsequence.
+18)  // Longest Common Subsequence.
 
 class Solution {
     public int longestCommonSubsequence(String text1, String text2) {
@@ -596,7 +623,7 @@ class Solution {
 Space-O(n)
 
 
-18)  // Longest Palindromic Substring. ->(Greedy/Two Pointer)
+19)  // Longest Palindromic Substring. ->(Greedy/Two Pointer)
 
 Every palindrome has a center and expands equally left & right.
 class Solution {
@@ -627,7 +654,7 @@ Space-O(1)
 More optimized approach is using Manachers algo.
 
 
-19)  // Longest Palindromic Subsequence. -> (DP)
+20)  // Longest Palindromic Subsequence. -> (DP)
 
 class Solution {
     public int longestPalindromeSubseq(String s) {
@@ -674,7 +701,7 @@ class Solution {
 Space-O(n)
 
 
-20)  // Palindromic Substrings. -> (Two-Pointer / Center-Expansion technique)
+21)  // Palindromic Substrings. -> (Two-Pointer / Center-Expansion technique)
 
 class Solution {
     int count=0;                                                      // maintain a global counter variable.
@@ -699,7 +726,7 @@ Time-O(N^2)
 Space-O(1)
 
 
-21)  // WildCard Matching.
+22)  // WildCard Matching.
 
 1) Create dp[n+1][m+1].
 2) Initialize base cases.
@@ -734,7 +761,7 @@ Time-O(n*m)
 Space-O(n*m)
 
 
-22)  // Egg Dropping Problem.
+23)  // Egg Dropping Problem.
 
 Case 1: Egg breaks -> You lose one egg. The critical floor is below it. -> Eggs left = k-1, Moves left = m-1, Floors you can test below = dp[k-1][m-1].
 Case 2: Egg does NOT break -> Eggs remain same. The critical floow is above it.-> Eggs left = k, Moves left = m-1, Floors you can test above = dp[k][m-1].
@@ -755,7 +782,7 @@ Time-O(k*moves)
 Space-O(k*moves)
 
 
-23)  // Regular Expression Matching Problem.
+24)  // Regular Expression Matching Problem.
 
 class Solution {
     public boolean isMatch(String s, String p) {
