@@ -947,10 +947,10 @@ class Solution {
     public int minimumTotal(List<List<Integer>> triangle) {
         int n=triangle.size();
         int[] dp=new int[n];
-         for(int j=0;j<n;j++){
+         for(int j=0;j<n;j++){                                         // copy the last row of triangle as the initial row in dp.
            dp[j]=triangle.get(n-1).get(j);
          }
-         for(int i=n-2;i>=0;i--){
+         for(int i=n-2;i>=0;i--){                                          // compare each value from n-2th row with the just below value value and below right value. 
             for(int j=0;j<=i;j++){
                 dp[j]=triangle.get(i).get(j) + Math.min(dp[j],dp[j+1]);
             }
@@ -1103,4 +1103,72 @@ Time-o(m*n)
 Space-O(m*n)
 
 
-37)  // 
+37)  // Minimum Falling Path sum.
+
+class Solution {
+    public int minFallingPathSum(int[][] matrix) {
+        int n=matrix.length;
+        int[][] dp=new int[n][n];
+        for(int j=0;j<n;j++){                             // copy the 1st row in the dp as it is.
+            dp[0][j]=matrix[0][j];
+        }
+        for(int i=1;i<n;i++){                                 
+            for(int j=0;j<n;j++){
+                int min=dp[i-1][j];                        // initialize the just above value as default min.
+                if(j>0){
+              min=Math.min(min,dp[i-1][j-1]);                       // then compare the left above with default to find min.
+                }   
+                if(j<n-1){                                             // compare the right above with default min to find min.
+                    min=Math.min(min,dp[i-1][j+1]);
+                }
+                dp[i][j]=matrix[i][j]+min;                              // cost + min value.
+                 }
+        }
+        int ans=Integer.MAX_VALUE;
+        for(int j=0;j<n;j++){                                       // from the last row of dp find the min. value.
+            ans=Math.min(ans,dp[n-1][j]);
+        }
+        return ans;
+    }
+}
+Time-O(n^2)
+Space-O(n^2)
+
+
+38)  //  Out of Boundary Paths.      (3D dp).
+
+class Solution {
+    final int mod=1000000007;                                     // given in problem for big values.
+    int[][][] dp;
+    public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        dp=new int[m][n][maxMove+1];
+        for(int i=0;i<m;i++){                                          // initially fill the dp with -1.
+            for(int j=0;j<n;j++){
+                Arrays.fill(dp[i][j],-1);
+            }
+        }
+        return helper(m,n,maxMove,startRow,startColumn,0);               // helper function for recursive calls.
+    }
+    public int helper(int m,int n,int maxMove,int i,int j,int moves){
+        if(i>=m || i<0 || j>=n || j<0){                                // if boundary coundition meets then 1 path found so return 1. 
+            return 1;
+        }
+        if(moves==maxMove){                                             // ret 0 because moves cannot exceed maxMoves.
+            return 0;
+        }
+        if(dp[i][j][moves]!=-1){                                           // if value already calculated then return it.
+            return dp[i][j][moves];
+        }
+        int c=0;                                                            // for counting paths.
+        c=(c+helper(m,n,maxMove,i+1,j,moves+1))%mod;
+        c=(c+helper(m,n,maxMove,i-1,j,moves+1))%mod;
+        c=(c+helper(m,n,maxMove,i,j+1,moves+1))%mod;
+        c=(c+helper(m,n,maxMove,i,j-1,moves+1))%mod;
+       return dp[i][j][moves]=c%mod;                                            // store the answer in dp and return it
+    }
+}
+Time-(m*n*moves)
+Space-O(m*n*moves)
+
+
+39)  //  
