@@ -1261,5 +1261,18 @@ class Solution {
 }
 
 
-41)  // Burst Balloons.
+41)  // count subset sum equal to k.     (same logic as coin change 2 . only difference is that here we dont have unlimited no. of coin so we do backward looping in dp.)
+
+class Solution {
+    public int perfectSum(int[] nums, int target) {
+        int[] dp=new int[target+1];
+        dp[0]=1;
+        for(int num:nums){
+            for(int i=target;i>=num;i--){
+                dp[i]=dp[i]+dp[i-num];
+            }
+        }
+        return dp[target];
+    }
+}
 
