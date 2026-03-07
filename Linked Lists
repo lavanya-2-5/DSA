@@ -612,4 +612,154 @@ Time-O(n log n)
 Space-O(log n)
 
 
-17)  // 
+17)  // Reorder List.
+
+1) Find middle and split the list.
+2) Reverse the 2nd half.
+3) Merge alternatively.
+
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head==null || head.next==null) return;
+        ListNode slow=head;
+        ListNode fast=head;
+        while(fast.next!=null && fast.next.next!=null){             // slow will land on first middle for even length list.
+            slow=slow.next;
+            fast=fast.next.next;
+        }
+        ListNode second=reverse(slow.next);
+        slow.next=null;                                      // split the list.
+        ListNode first=head;
+        while(second!=null){                                   // merge alternatively.
+            ListNode temp1=first.next;
+            ListNode temp2=second.next;
+            first.next=second;
+            second.next=temp1;
+            first=temp1;
+            second=temp2;
+        }
+    }
+    public static ListNode reverse(ListNode node){
+      ListNode prev=null;
+      while(node!=null){
+       ListNode nextnode=node.next;
+       node.next=prev;
+       prev=node;
+       node=nextnode;
+      }
+      return prev;
+    }
+}
+Time-O(n)
+Space-O(1)
+
+
+18)  // Rotate List by k steps.
+
+1) find length of list
+2) reduce k and make the list circular
+3) find new tail by length-k
+4) break the circle from the new tail.
+
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head==null || head.next==null || k==0) return head;
+        ListNode temp=head;
+        int l=1;
+        while(temp.next!=null){
+            temp=temp.next;                            // finding the length of the list.
+            l++;
+        }
+       k=k%l;                                                // reducing k.
+       if(k==0) return head;
+       temp.next=head;                                          // making a cycle.
+       ListNode newtail=head;                                
+       int steps=l-k;                                       // finding the newtail.
+       for(int i=1;i<steps;i++){
+         newtail=newtail.next;
+       }
+       ListNode newhead=newtail.next;                         // make the next of newtail as newhead
+       newtail.next=null;                                        // break the cycle between the newtail and newhead.
+     return newhead;
+    }
+}
+Time-O(n)
+Space-O(1)
+
+
+19)  // Linked List Cycle 2.
+
+* distance(head → cycle start) = distance(meeting point → cycle start)
+1) find the meeting point of slow and fast pointers.
+2) break after a cycle is present. if no cycle present then return null.
+3) start a pointer from head and the slow pointer from the meeting point as the distance is equal so they will meet at the cycle start. return that node.
+
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        if(head==null || head.next==null) return null;
+        ListNode slow=head;
+        ListNode fast=head;
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow==fast){                                         // break at the meeting point using slow-fast pointers.
+                 break;
+            }
+        }
+    if(fast==null || fast.next==null) return null;                   // if no cycle present then fast will reach null so return null.
+        ListNode first=head;                                      // traverse from the head and the slow pointer equally till they meet.
+        while(first!=slow){
+         first=first.next;
+         slow=slow.next;                                               // the point where they meet is the starting point of the cycle.
+        }
+        return first;
+    }
+}
+Time-O(n)
+Space-O(1)
+
+
+20)  // Reverse nodes in K groups.
+
+1) find kth node.
+2) reverse the group.
+3) reconnect the dummy node to the kth node because it is still pointing to the first node.
+4) move the pointer.
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy=new ListNode(Integer.MIN_VALUE);
+        ListNode prevG=dummy;                                                // connect the dummy with head.
+        dummy.next=head;
+        while(true){
+            ListNode kth=findkth(prevG,k);                                  // find the kth node if k nodes exist in the group.
+            if(kth==null) break;                                            // if k nodes does not exist, break.
+            ListNode nextG=kth.next;
+            ListNode prev=nextG;                                               // use 3 pointer tech. for reversing each group.
+            ListNode curr=prevG.next;
+            while(curr!=nextG){
+                ListNode tmp=curr.next;
+                curr.next=prev;
+                prev=curr;
+                curr=tmp;
+            }
+            ListNode temp=prevG.next;                                  // reconnect the dummy.
+            prevG.next=kth; 
+            prevG=temp;                                                       // move the prevG pointer to the reversed group's last node.
+        }
+        return dummy.next;
+    }
+    public static ListNode findkth(ListNode curr,int k){
+        while(curr!=null && k>0){                                         // for finding the kth node.
+            curr=curr.next;
+            k--;
+        }
+        return curr;
+    }
+}
+Time-O(n)
+Space-O(1)
+
+
+21)  //  Split Linked lists in parts.
+
