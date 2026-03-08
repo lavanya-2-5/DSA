@@ -1018,65 +1018,9 @@ class Solution {
 Space-O(n)
 
 
-31)  // Longest Palindromic Substring. ->(Greedy/Two Pointer)
-
-Every palindrome has a center and expands equally left & right.
-class Solution {
-    public String longestPalindrome(String s) {
-        int start=0,end=0;
-        for(int i=0;i<s.length();i++){
-            int len1=expand(s,i,i+1);
-            int len2=expand(s,i,i);
-            int len=Math.max(len1,len2);
-            if((end-start)<len){                                             // Center at i, Expand left by (len-1)/2, Expand right by len/2.
-                start=i-(len-1)/2;
-                end=i+len/2;
-            }
-        }
-        return s.substring(start,end+1);
-    }
-    public int expand(String s,int i,int j){
-        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){
-            i--;                                                         // keep expanding till boundary checks.
-            j++;
-        }
-        return j-i-1;                                                                // return the length of the current palindrome.
-    } 
-}
-Time-O(n^2)
-Space-O(1)
-
-More optimized approach is using Manachers algo.
-
-
-32)  // Palindromic Substrings. -> (Two-Pointer / Center-Expansion technique)
-
-class Solution {
-    int count=0;                                                      // maintain a global counter variable.
-    public int countSubstrings(String s) {
-        int st=0;
-        int end=0;
-        for(int i=0;i<s.length();i++){
-             expand(s,i,i);                                             // for odd length palindromes, center is 1.
-             expand(s,i,i+1);                                           // for even length palindromes, center is 2 letters.
-        }
-        return count;
-    }
-    public void expand(String s,int i,int j){
-        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){
-            i--;
-            j++;
-            count++;
-        }
-    }
-}
-Time-O(N^2)
-Space-O(1)
-
-
 STRING MATCHING DP-(HARD)
 
-33)  // WildCard Matching.
+31)  // WildCard Matching.
 
 1) Create dp[n+1][m+1].
 2) Initialize base cases.
@@ -1111,7 +1055,7 @@ Time-O(n*m)
 Space-O(n*m)
 
 
-34)  // Regular Expression Matching Problem.
+32)  // Regular Expression Matching Problem.
 
 class Solution {
     public boolean isMatch(String s, String p) {
@@ -1150,7 +1094,7 @@ NOTES-: one character consumed from string & one character consumed from pattern
 
 MULTI STATE DP- DP with multiple variables or complex states.
 
-35)  // Egg Dropping Problem.
+33)  // Egg Dropping Problem.
 
 Case 1: Egg breaks -> You lose one egg. The critical floor is below it. -> Eggs left = k-1, Moves left = m-1, Floors you can test below = dp[k-1][m-1].
 Case 2: Egg does NOT break -> Eggs remain same. The critical floow is above it.-> Eggs left = k, Moves left = m-1, Floors you can test above = dp[k][m-1].
@@ -1171,7 +1115,7 @@ Time-O(k*moves)
 Space-O(k*moves)
 
 
-36)  //  Out of Boundary Paths.      (3D dp).
+34)  //  Out of Boundary Paths.      (3D dp).
 
 class Solution {
     final int mod=1000000007;                                     // given in problem for big values.
@@ -1209,7 +1153,7 @@ Space-O(m*n*moves)
 
 DP ON STOCKS- DP with buy/sell states.
 
-37)  //  Best Time to Buy And Sell Stock 3. (at most 2 transactions)
+35)  //  Best Time to Buy And Sell Stock 3. (at most 2 transactions)
 
 class Solution {
     public int maxProfit(int[] prices) {
@@ -1249,7 +1193,7 @@ Time-O(n)
 Space-O(1)
 
 
-38)  // Best Time to buy And sell stock 4.
+36)  // Best Time to buy And sell stock 4.
 
 Using 3D dp Approach-
 class Solution {
@@ -1298,7 +1242,7 @@ class Solution {
     }
 }
 
-39)  // Climbing Stairs 2.
+37)  // Climbing Stairs 2.
 
 class Solution {
     public int climbStairs(int n, int[] costs) {
