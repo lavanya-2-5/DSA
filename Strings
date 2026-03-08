@@ -201,3 +201,120 @@ class Solution {
 }
 Time-O(n^2)
 Space-O(1)
+
+
+9)  // Palindromic Substrings. -> (Two-Pointer / Center-Expansion technique)
+
+class Solution {
+    int count=0;                                                      // maintain a global counter variable.
+    public int countSubstrings(String s) {
+        int st=0;
+        int end=0;
+        for(int i=0;i<s.length();i++){
+             expand(s,i,i);                                             // for odd length palindromes, center is 1.
+             expand(s,i,i+1);                                           // for even length palindromes, center is 2 letters.
+        }
+        return count;
+    }
+    public void expand(String s,int i,int j){
+        while(i>=0 && j<s.length() && s.charAt(i)==s.charAt(j)){
+            i--;
+            j++;
+            count++;
+        }
+    }
+}
+Time-O(N^2)
+Space-O(1)
+
+
+10)  Find first Occurence of needle in haystack.
+
+class Solution {
+    public int strStr(String haystack, String needle) {
+     if (haystack == null || needle == null) {
+            return -1;
+        }
+        if (haystack.equals(needle)) {
+            return 0;
+        }
+        int needleLength = needle.length();
+        for (int i = 0; i < haystack.length() - needleLength + 1; i++) {              // keep moving the i pointer simultaneously along with length of needle.
+            if (haystack.substring(i, i + needleLength).equals(needle)) {
+                return i;   
+    }
+}
+return -1;
+    }
+}
+Time-O(n*m)
+Space-O(m) due to substring().
+
+Space optimization-
+for(int i=0;i<=haystack.length()-needle.length();i++){
+    int j=0;
+    while(j<needle.length() && haystack.charAt(i+j)==needle.charAt(j)){           // we are comparing character by character for each substring.
+        j++;
+    }
+    if(j==needle.length()){
+        return i;
+    }
+}
+return -1;  -> O(1) space
+
+KMP(Knuth-Morris Pratt Algo)-
+1) Build LPS array for needle.
+2) Traverse haystack and needle together.
+3) If characters match → move both pointers.
+4) If mismatch → jump using LPS instead of restarting.
+
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if(needle.length() == 0) return 0;
+        int[] lps = buildLPS(needle);
+        int i = 0;                                                            // haystack pointer
+        int j = 0;                                                                // needle pointer
+        while(i < haystack.length()){
+            if(haystack.charAt(i) == needle.charAt(j)){
+                i++;
+                j++;
+            }
+            if(j == needle.length()){
+                return i - j;
+            }
+            else if(i < haystack.length() && haystack.charAt(i) != needle.charAt(j)){
+                if(j != 0){
+                    j = lps[j-1];
+                }
+                else{
+                    i++;
+                }
+            }
+        }
+        return -1;
+    }
+    public int[] buildLPS(String pattern){
+        int[] lps = new int[pattern.length()];
+        int len = 0;
+        int i = 1;
+        while(i < pattern.length()){
+            if(pattern.charAt(i) == pattern.charAt(len)){
+                len++;
+                lps[i] = len;
+                i++;
+            }
+            else{
+                if(len != 0){
+                    len = lps[len-1];
+                }
+                else{
+                    lps[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+}
+Time-O(n+m)
+Space-O(m)
