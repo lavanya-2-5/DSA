@@ -318,3 +318,70 @@ class Solution {
 }
 Time-O(n+m)
 Space-O(m)
+
+
+11)  // Longest Common prefix.
+
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        Arrays.sort(strs);                                          // sort the array.
+        String s1=strs[0];                                                   // only compare the start and end string of the list.
+        String s2=strs[strs.length-1];
+        int ind=0;
+        while(ind <s1.length() && ind <s2.length()){
+            if(s1.charAt(ind)==s2.charAt(ind)){
+                ind++;
+            } else
+            break;
+        }
+  return s1.substring(0,ind);
+    }
+}
+Time-O(n log n)
+Spac-O(1)
+
+
+12)  //  Minimum Window Substring. (sliding window + freq. map)
+
+import java.util.*;
+
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() == 0 || t.length() == 0) return "";
+        Map<Character, Integer> map = new HashMap<>();                       // Store frequency of chars in t.
+        for (char c : t.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+       int start=0,end=0;
+       int count=0;
+       int minLength=Integer.MAX_VALUE;
+       int startInd=-1;
+        while (end < s.length()) {
+            char c = s.charAt(end);
+            if (map.containsKey(c)) {                                                  // If char found in map, decrease its frequency.
+             map.put(c,map.get(c)-1);
+             if(map.get(c)>=0){
+                count++;                                                    //means the occurence was useful, we matched 1 char.
+             }
+            }
+            while (count==t.length()) {                             // If all characters are matched, try to shrink window.
+                if (end-start + 1 < minLength) {
+                    minLength = end- start+ 1;
+                    startInd = start;
+                }
+                char leftChar = s.charAt(start);
+                if (map.containsKey(leftChar)) {
+                    map.put(leftChar, map.get(leftChar) + 1);
+                    if (map.get(leftChar) > 0) {
+                        count--;                                                 // window no longer valid
+                    }
+                }
+                start++;
+            }
+            end++;
+        }
+        return startInd ==-1 ? "" : s.substring(startInd, startInd + minLength);
+    }
+}
+Time-O(n)
+Space-O(k)
